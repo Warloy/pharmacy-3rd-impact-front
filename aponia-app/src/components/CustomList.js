@@ -18,7 +18,6 @@ import MedicationIcon from '@mui/icons-material/Medication';
 import DomainAddIcon from '@mui/icons-material/DomainAdd';
 import PublicIcon from '@mui/icons-material/Public';
 import SettingsIcon from '@mui/icons-material/Settings';
-import DisciplineIcon from '../data/DisciplineIcon.js'
 import LogoutIcon from '@mui/icons-material/Logout';
 
 const categories = [
@@ -89,11 +88,12 @@ export default function CustomizedList(userType) {
         <Paper elevation={0} sx={{ maxWidth: 256 }}>
           <LogoNav component="nav" disablePadding>
             <ListItemButton component="a" href="#">
-              <ListItemIcon sx={{ fontSize: 20 }}> <DisciplineIcon/> </ListItemIcon>
+              <ListItemIcon sx={{ fontSize: 20 }}> {/*<DisciplineIcon/>*/} </ListItemIcon>
               <ListItemText
                 sx={{ my: 0 }}
-                primary="Mitra"
+                primary="Home"
                 primaryTypographyProps={{
+                  align: 'center',
                   fontSize: 20,
                   fontWeight: 'medium',
                   letterSpacing: 0,
