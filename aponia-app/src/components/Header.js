@@ -25,7 +25,7 @@ function Header({onDrawerToggle}) {
       >
         <Toolbar>
           <Grid container direction="row" justifyContent="flex-start" alignItems="center" spacing={2}>
-          <Grid sx={{ display: { sm: 'none', xs: 'block' } }} item>
+          <Grid sx={{ display: { sm: 'block', xs: 'block' } }} item>
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -36,11 +36,11 @@ function Header({onDrawerToggle}) {
               </IconButton>
             </Grid>
             <Grid item>
-                <DisciplineIcon/>
+                <DisciplineIcon size="64px"/>
             </Grid>
             <Grid item xs>
               <Typography color="inherit" variant="h5" component="h1">
-                {`  Mitra Management System`}
+                {`  Mitra: Inventory Management System`}
               </Typography>
             </Grid>
             <Grid item>

@@ -15,7 +15,7 @@ import theme from './components/Theme';
 function App() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
-  const drawerWidth = 248;
+  const drawerWidth = 244;
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -24,21 +24,14 @@ function App() {
       <CssBaseline />
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{ width: { sm: 0 }, flexShrink: { sm: 0 } }}
       >
-        {isSmUp ? null : (
-          <Navigator
+      <Navigator
             PaperProps={{ style: { width: drawerWidth } }}
             variant="temporary"
             open={mobileOpen}
             onClose={handleDrawerToggle}
-          />
-        )}
-
-        <Navigator
-          PaperProps={{ style: { width: drawerWidth } }}
-          sx={{ display: { sm: 'block', xs: 'none' } }}
-        />
+      />
       </Box>
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Header 

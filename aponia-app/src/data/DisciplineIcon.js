@@ -1,6 +1,7 @@
 import React from 'react'
 
-export default function DisciplineIcon() {
+export default function DisciplineIcon({size}) {
+	
 	return (
 		<svg 
 		version="1.1" 
@@ -8,8 +9,8 @@ export default function DisciplineIcon() {
 		xmlns="http://www.w3.org/2000/svg"
 		x="0px" 
 		y="0px"
-		width="64px"
-		height="64px"
+		width={size}
+		height={size}
 		viewBox="0 0 1280 1225" 
 		enable-background="new 0 0 1280 1225">
 		<path fill="#FEFEFE" opacity="0.000000" stroke="none" 
