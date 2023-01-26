@@ -17,8 +17,7 @@ import Typography from '@mui/material/Typography';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
-function Header(props) {
-  const { onDrawerToggle } = props;
+function Header({onDrawerToggle, headTitle, activeSection}) {
 
   return (
     <React.Fragment>
@@ -79,7 +78,7 @@ function Header(props) {
           <Grid container alignItems="center" spacing={1}>
             <Grid item xs>
               <Typography color="inherit" variant="h5" component="h1">
-                Authentication
+                {headTitle}
               </Typography>
             </Grid>
             <Grid item>
