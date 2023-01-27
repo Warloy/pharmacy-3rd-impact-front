@@ -19,7 +19,6 @@ import DomainAddIcon from '@mui/icons-material/DomainAdd';
 import PublicIcon from '@mui/icons-material/Public';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
-import DisciplineIcon from '../data/DisciplineIcon.js';
 
 const categories = [
     {
@@ -27,9 +26,9 @@ const categories = [
         secondary: 'Módulo de gestión administrativo',
         type: 0,
         children: [
-        { id: 'Catálogo de medicina', icon: <MedicationIcon /> },
-        { id: 'Gestión de usuarios', icon: <ManageAccountsIcon /> },
-        { id: 'Gestión de sucursales', icon: <DomainAddIcon /> },
+        { id: 'Catálogo de medicina', icon: <MedicationIcon />, link:'/Admin/Catalog' },
+        { id: 'Gestión de usuarios', icon: <ManageAccountsIcon />, link:'/Admin/User' },
+        { id: 'Gestión de sucursales', icon: <DomainAddIcon />, link:'/' },
         ],
     },
     {
@@ -37,8 +36,8 @@ const categories = [
         secondary: 'Módulo de reportes y control',
         type: 1,
         children: [
-        { id: 'Por Sucursal', icon: <SettingsIcon /> },
-        { id: 'Global', icon: <PublicIcon /> },
+        { id: 'Por Sucursal', icon: <SettingsIcon />, link:'/' },
+        { id: 'Global', icon: <PublicIcon />, link:'/' },
         ],
     },
     {
@@ -46,8 +45,8 @@ const categories = [
         secondary: 'Módulos de acción',
         type: 1,
         children: [
-        { id: 'Registro de Medicina', icon: <MedicationIcon /> },
-        { id: 'Reportes', icon: <SettingsIcon /> },
+        { id: 'Registro de Medicina', icon: <MedicationIcon />, link:'/' },
+        { id: 'Reportes', icon: <SettingsIcon />, link:'/' },
         ],
     },
 ];
@@ -67,7 +66,7 @@ const LogoNav = styled(List)({
 });
 
 export default function CustomizedList(userType) {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   return (
     <Box sx={{ display: 'flex' }}>
       <ThemeProvider
@@ -197,10 +196,11 @@ export default function CustomizedList(userType) {
                     />
                 </ListItemButton>
                 {open &&
-                    children.map((item) => (
+                    children.map((item, link) => (
                     <ListItemButton
                         key={item.id}
                         sx={{ py: 0, minHeight: 32, color: 'rgba(255,255,255,.8)' }}
+                        href={item.link}
                     >
                         <ListItemIcon sx={{ color: 'inherit' }}>
                         {item.icon}
