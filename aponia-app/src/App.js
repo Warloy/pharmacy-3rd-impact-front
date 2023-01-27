@@ -43,8 +43,8 @@ function App() {
                 {/* Landing*/}
                 <Route exact path='/' element={PageNavigator}/>
                 {/* Admin/Cruds*/}
-                <Route path='/Admin/Catalog' element={<CatalogCRUD/>}/>
-                <Route path='/Admin/User' element={<UserCRUD/>}/>
+                <Route path='/admin/catalog' element={<CatalogCRUD/>}/>
+                <Route path='/admin/user' element={<UserCRUD/>}/>
                 {/* Admin/Reports*/}
                 {/* Agent*/}
             </Routes>

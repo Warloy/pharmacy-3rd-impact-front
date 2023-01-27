@@ -26,9 +26,9 @@ const categories = [
         secondary: 'Módulo de gestión administrativo',
         type: 0,
         children: [
-        { id: 'Catálogo de medicina', icon: <MedicationIcon />, link:'/Admin/Catalog' },
-        { id: 'Gestión de usuarios', icon: <ManageAccountsIcon />, link:'/Admin/User' },
-        { id: 'Gestión de sucursales', icon: <DomainAddIcon />, link:'/' },
+        { id: 'Catálogo de medicina', icon: <MedicationIcon />, link:'/admin/catalog' },
+        { id: 'Gestión de usuarios', icon: <ManageAccountsIcon />, link:'/admin/user' },
+        { id: 'Gestión de sucursales', icon: <DomainAddIcon />, link:'/admin/office' },
         ],
     },
     {
@@ -36,8 +36,8 @@ const categories = [
         secondary: 'Módulo de reportes y control',
         type: 1,
         children: [
-        { id: 'Por Sucursal', icon: <SettingsIcon />, link:'/' },
-        { id: 'Global', icon: <PublicIcon />, link:'/' },
+        { id: 'Por Sucursal', icon: <SettingsIcon />, link:'/admin/reports' },
+        { id: 'Global', icon: <PublicIcon />, link:'/admin/reports/global' },
         ],
     },
     {
@@ -45,8 +45,8 @@ const categories = [
         secondary: 'Módulos de acción',
         type: 1,
         children: [
-        { id: 'Registro de Medicina', icon: <MedicationIcon />, link:'/' },
-        { id: 'Reportes', icon: <SettingsIcon />, link:'/' },
+        { id: 'Inventario', icon: <MedicationIcon />, link:'/agent/inventory' },
+        { id: 'Reportes', icon: <SettingsIcon />, link:'/agent/reports' },
         ],
     },
 ];
@@ -87,7 +87,7 @@ export default function CustomizedList(userType) {
       >
         <Paper elevation={0} sx={{ maxWidth: 256 }}>
           <LogoNav component="nav" disablePadding>
-            <ListItemButton component="a" href="#">
+            <ListItemButton component="a" href="/">
               <ListItemIcon sx={{ fontSize: 20 }}> {/*<DisciplineIcon size="32px"/>*/} </ListItemIcon>
               <ListItemText
                 sx={{ my: 0 }}
