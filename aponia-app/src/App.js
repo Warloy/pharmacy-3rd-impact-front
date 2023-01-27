@@ -11,6 +11,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PageNavigator from './components/PageSelector';
 import UserCRUD from './pages/UserCRUD';
 import CatalogCRUD from './pages/CatalogCRUD';
+import OfficeCRUD from './pages/OfficeCRUD';
+import InventoryCRUD from './pages/InventoryCRUD';
 
 function App() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -45,8 +47,10 @@ function App() {
                 {/* Admin/Cruds*/}
                 <Route path='/admin/catalog' element={<CatalogCRUD/>}/>
                 <Route path='/admin/user' element={<UserCRUD/>}/>
+                <Route path='/admin/office' element={<OfficeCRUD/>}/>
                 {/* Admin/Reports*/}
                 {/* Agent*/}
+                <Route path='/agent/inventory' element={<InventoryCRUD/>}/>
             </Routes>
           </Box>
           <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
