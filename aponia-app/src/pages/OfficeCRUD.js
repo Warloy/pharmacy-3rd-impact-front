@@ -29,6 +29,26 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function OfficeCRUD() {
+  const [searchParams, setSearchParams] = React.useState('');
+  const [officeCode, setOfficeCode] = React.useState('');
+
+  const loadForm = (event) => {  
+  }
+  const handleReload = () => {
+    setSearchParams('')
+  }
+  const handleSearchParams = (event) => {
+    event.target.value === null ? setSearchParams('') : 
+    setSearchParams(event.target.value)
+  }
+  const handleSearchButton = () => {
+    searchParams === null ? setOfficeCode('') : 
+    setOfficeCode(searchParams)
+  }
+  const handleCleanUp = () => {
+    setSearchParams('')
+    setOfficeCode('')
+  }
     return (
     <Paper elevation='0' sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
       <AppBar
@@ -46,6 +66,8 @@ export default function OfficeCRUD() {
               <TextField
                 fullWidth
                 placeholder="Buscar por código de sucursal"
+                value={searchParams}
+                onChange={handleSearchParams}
                 InputProps={{
                   disableUnderline: true,
                   sx: { fontSize: 'default' },
@@ -54,14 +76,14 @@ export default function OfficeCRUD() {
               />
             </Grid>
             <Grid item>
-              <Button variant="contained" sx={{ mr: 1 }}>
-                Buscar
-              </Button>
               <Tooltip title="Reload">
-                <IconButton>
+                <IconButton onClick={handleReload}>
                   <RefreshIcon color="inherit" sx={{ display: 'block' }} />
                 </IconButton>
               </Tooltip>
+              <Button variant="contained" onClick={handleSearchButton} sx={{ mr: 1 }}>
+                Buscar
+              </Button>
             </Grid>
           </Grid>
         </Toolbar>
@@ -75,6 +97,8 @@ export default function OfficeCRUD() {
                     <InputLabel>Código de Sucursal</InputLabel>
                     <OutlinedInput
                         id="office-code"
+                        value={officeCode}
+                        disabled
                         endAdornment={
                         <InputAdornment position="end">
                             <QrCode2Icon />
@@ -87,7 +111,7 @@ export default function OfficeCRUD() {
         </Grid>
         <Grid container direction="row" rowSpacing={2} columnSpacing={2} alignItems="center" justifyContent="flex-end" columns="18" sx={{width:0.95}}>
             <Grid item xs={4} md={2} sx={{ my: 5, mx: 2, width:1 }}>
-                <Button variant="contained" startIcon={<CancelIcon />}>  Cancelar </Button>
+                <Button variant="contained" onClick={handleCleanUp} startIcon={<CancelIcon />}>  Cancelar </Button>
             </Grid>
             <Grid item xs={4} md={2} sx={{ my: 5, mx: 2, width:1 }}>
                 <Button variant="contained" startIcon={<SaveIcon />}>  Guardar </Button>

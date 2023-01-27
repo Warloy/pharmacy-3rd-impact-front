@@ -59,11 +59,36 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function CatalogCRUD() {
-    const [presentation, setPresentation] = React.useState('');
-
-    const handleChange = (event) => {
-        setPresentation(event.target.value);
-    };
+  const [searchParams, setSearchParams] = React.useState('');
+  const [medCode, setMedCode] = React.useState('');
+  const [medDesc, setMedDesc] = React.useState('');
+  const [presentation, setPresentation] = React.useState('');
+  
+  const loadForm = (event) => {  
+  }
+  const handleReload = () => {
+    setSearchParams('')
+  }
+  const handleSearchParams = (event) => {
+    event.target.value === null ? setSearchParams('') : 
+    setSearchParams(event.target.value)
+  }
+  const handleSearchButton = () => {
+    searchParams === null ? setMedCode('') : 
+    setMedCode(searchParams)
+  }
+  const handleMedDesc = (event) => { 
+      setMedDesc(event.target.value)
+  }
+  const handlePresentationList = (event) => {
+      setPresentation(event.target.value);
+  }
+  const handleCleanUp = () => {
+    setSearchParams('')
+    setMedCode('')
+    setMedDesc('')
+    setPresentation('')
+  }
     return (
     <Paper elevation='0' sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
       <AppBar
@@ -81,6 +106,8 @@ export default function CatalogCRUD() {
               <TextField
                 fullWidth
                 placeholder="Buscar por código"
+                value={searchParams}
+                onChange={handleSearchParams}
                 InputProps={{
                   disableUnderline: true,
                   sx: { fontSize: 'default' },
@@ -89,14 +116,14 @@ export default function CatalogCRUD() {
               />
             </Grid>
             <Grid item>
-              <Button variant="contained" sx={{ mr: 1 }}>
-                Buscar
-              </Button>
-              <Tooltip title="Reload">
-                <IconButton>
+              <Tooltip title="Reset">
+                <IconButton onClick={handleReload}>
                   <RefreshIcon color="inherit" sx={{ display: 'block' }} />
                 </IconButton>
               </Tooltip>
+              <Button variant="contained" onClick={handleSearchButton} sx={{ mr: 1 }}>
+                Buscar
+              </Button>
             </Grid>
           </Grid>
         </Toolbar>
@@ -110,6 +137,8 @@ export default function CatalogCRUD() {
                     <InputLabel>Código</InputLabel>
                     <OutlinedInput
                         id="catalog-code"
+                        value={medCode}
+                        disabled
                         endAdornment={
                         <InputAdornment position="end">
                             <QrCode2Icon />
@@ -124,6 +153,8 @@ export default function CatalogCRUD() {
                     <InputLabel>Descripción</InputLabel>
                     <OutlinedInput
                         id="catalog-desc"
+                        value={medDesc}
+                        onChange={handleMedDesc}
                         multiline
                         maxRows='1'
                         endAdornment={
@@ -143,7 +174,7 @@ export default function CatalogCRUD() {
                         id="catalog-presentation"
                         value={presentation}
                         label="Presentación"
-                        onChange={handleChange}
+                        onChange={handlePresentationList}
                         endAdornment={
                             <InputAdornment position="start">
                                 <MedicationIcon />
@@ -162,7 +193,7 @@ export default function CatalogCRUD() {
         </Grid>
         <Grid container direction="row" rowSpacing={2} columnSpacing={2} alignItems="center" justifyContent="flex-end" columns="18" sx={{width:0.95}}>
             <Grid item xs={4} md={2} sx={{ my: 5, mx: 2, width:1 }}>
-                <Button variant="contained" startIcon={<CancelIcon />}>  Cancelar </Button>
+                <Button variant="contained" onClick={handleCleanUp} startIcon={<CancelIcon />}>  Cancelar </Button>
             </Grid>
             <Grid item xs={4} md={2} sx={{ my: 5, mx: 2, width:1 }}>
                 <Button variant="contained" startIcon={<SaveIcon />}>  Guardar </Button>

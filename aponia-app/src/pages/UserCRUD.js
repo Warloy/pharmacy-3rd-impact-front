@@ -47,11 +47,64 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function UserCRUD() {
-    const [userType, setUserType] = React.useState('');
+    const [searchParams, setSearchParams] = React.useState('');
+    const [userMail, setUserMail] = React.useState('');
+    const [userPassword, setUserPassword] = React.useState('');
+    const [userIdentification, setUserIdentification] = React.useState('');
+    const [officeCode, setOfficeCode] = React.useState('');
+    const [userName, setUserName] = React.useState('');
+    const [userLastName, setUserLastName] = React.useState('');
+    const [userPhone, setUserPhone] = React.useState('');
+    const [userType, setUserType] = React.useState(''); 
 
-    const handleChange = (event) => {
+    const loadForm = (event) => {  
+    }
+    const handleReload = () => {
+      setSearchParams('')
+    }
+    const handleSearchParams = (event) => {
+      event.target.value === null ? setSearchParams('') : 
+      setSearchParams(event.target.value)
+    }
+    const handleSearchButton = () => {
+      searchParams === null ? setUserIdentification('') : 
+      setUserIdentification(searchParams)
+    }
+    const handleUserMail = (event) => { 
+        setUserMail(event.target.value)
+    }
+    const handleUserPassword = (event) => { 
+        setUserPassword(event.target.value)
+    }
+    const handleUserIdentification = (event) => { 
+        setUserIdentification(event.target.value)
+    }
+    const handleOfficeCode = (event) => { 
+        setOfficeCode(event.target.value)
+    }
+    const handleUserName = (event) => { 
+        setUserName(event.target.value)
+    }
+    const handleUserLastName = (event) => { 
+        setUserLastName(event.target.value)
+    }
+    const handleUserPhone = (event) => { 
+        setUserPhone(event.target.value)
+    }
+    const handleTypeList = (event) => {
         setUserType(event.target.value);
-    };
+    }
+    const handleCleanUp = () => {
+      setSearchParams('')
+      setUserMail('')
+      setUserPassword('')
+      setUserIdentification('')
+      setOfficeCode('')
+      setUserName('')
+      setUserLastName('')
+      setUserPhone('')
+      setUserType('')
+    }
     return (
     <Paper elevation='0' sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
       <AppBar
@@ -69,6 +122,8 @@ export default function UserCRUD() {
               <TextField
                 fullWidth
                 placeholder="Buscar por cédula"
+                value={searchParams}
+                onChange={handleSearchParams}
                 InputProps={{
                   disableUnderline: true,
                   sx: { fontSize: 'default' },
@@ -77,14 +132,14 @@ export default function UserCRUD() {
               />
             </Grid>
             <Grid item>
-              <Button variant="contained" sx={{ mr: 1 }}>
-                Buscar
-              </Button>
               <Tooltip title="Reload">
-                <IconButton>
+                <IconButton onClick={handleReload}>
                   <RefreshIcon color="inherit" sx={{ display: 'block' }} />
                 </IconButton>
               </Tooltip>
+              <Button variant="contained" onClick={handleSearchButton} sx={{ mr: 1 }}>
+                Buscar
+              </Button>
             </Grid>
           </Grid>
         </Toolbar>
@@ -98,6 +153,8 @@ export default function UserCRUD() {
                     <InputLabel>Correo</InputLabel>
                     <OutlinedInput
                         id="user-mail"
+                        value={userMail}
+                        onChange={handleUserMail}
                         endAdornment={
                         <InputAdornment position="end">
                             <AlternateEmailIcon />
@@ -112,6 +169,9 @@ export default function UserCRUD() {
                     <InputLabel>Contraseña</InputLabel>
                     <OutlinedInput
                         id="user-password"
+                        type="Password"
+                        value={userPassword}
+                        onChange={handleUserPassword}
                         endAdornment={
                         <InputAdornment position="end">
                             <KeyIcon />
@@ -126,6 +186,9 @@ export default function UserCRUD() {
                     <InputLabel>Cédula</InputLabel>
                     <OutlinedInput
                         id="user-identification"
+                        value={userIdentification}
+                        onChange={handleUserIdentification}
+                        disabled
                         endAdornment={
                         <InputAdornment position="end">
                             <BadgeIcon />
@@ -140,6 +203,8 @@ export default function UserCRUD() {
                     <InputLabel>Código de Sucursal</InputLabel>
                     <OutlinedInput
                         id="user-office-code"
+                        value={officeCode}
+                        onChange={handleOfficeCode}
                         endAdornment={
                         <InputAdornment position="end">
                             <QrCode2Icon />
@@ -154,6 +219,8 @@ export default function UserCRUD() {
                     <InputLabel>Nombre</InputLabel>
                     <OutlinedInput
                         id="user-name"
+                        value={userName}
+                        onChange={handleUserName}
                         endAdornment={
                         <InputAdornment position="end">
                             <DriveFileRenameOutlineIcon />
@@ -168,6 +235,8 @@ export default function UserCRUD() {
                     <InputLabel>Apellido</InputLabel>
                     <OutlinedInput
                         id="user-last-name"
+                        value={userLastName}
+                        onChange={handleUserLastName}
                         endAdornment={
                         <InputAdornment position="end">
                             <DriveFileRenameOutlineIcon />
@@ -182,6 +251,8 @@ export default function UserCRUD() {
                     <InputLabel>Teléfono</InputLabel>
                     <OutlinedInput
                         id="user-phone"
+                        value={userPhone}
+                        onChange={handleUserPhone}
                         endAdornment={
                         <InputAdornment position="end">
                             <PhoneAndroidIcon />
@@ -199,7 +270,7 @@ export default function UserCRUD() {
                         id="user-type"
                         value={userType}
                         label="Tipo de usuario"
-                        onChange={handleChange}
+                        onChange={handleTypeList}
                         endAdornment={
                             <InputAdornment position="start">
                                 <ClassIcon />
@@ -218,7 +289,7 @@ export default function UserCRUD() {
         </Grid>
         <Grid container direction="row" rowSpacing={2} columnSpacing={2} alignItems="center" justifyContent="flex-end" columns="18" sx={{width:0.95}}>
             <Grid item xs={4} md={2} sx={{ my: 5, mx: 2, width:1 }}>
-                <Button variant="contained" startIcon={<CancelIcon />}>  Cancelar </Button>
+                <Button variant="contained" onClick={handleCleanUp} startIcon={<CancelIcon />}>  Cancelar </Button>
             </Grid>
             <Grid item xs={4} md={2} sx={{ my: 5, mx: 2, width:1 }}>
                 <Button variant="contained" startIcon={<SaveIcon />}>  Guardar </Button>

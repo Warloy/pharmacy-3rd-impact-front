@@ -40,29 +40,28 @@ export default function InventoryCRUD() {
   const [searchParams, setSearchParams] = React.useState('');
   const [medCode, setMedCode] = React.useState('');
   const [medQty, setMedQty] = React.useState('');
-  const handleMedQty = (event) => {
-      event.target.value < 0 ? event.target.value=0 : 
-      setMedQty(event.target.value)
-  };
-
+  
   const loadForm = (event) => {  
-  }
-
-  const handleSearchParams = (event) => {
-    event.target.value === null ? setSearchParams('') : 
-    setSearchParams(event.target.value)
-  };
-  const handleSearchButton = () => {
-    searchParams === null ? setMedCode('') : 
-    setMedCode(searchParams)
   }
   const handleReload = () => {
     setSearchParams('')
   }
+  const handleSearchParams = (event) => {
+    event.target.value === null ? setSearchParams('') : 
+    setSearchParams(event.target.value)
+  }
+  const handleSearchButton = () => {
+    searchParams === null ? setMedCode('') : 
+    setMedCode(searchParams)
+  }
+  const handleMedQty = (event) => {
+      event.target.value < 0 ? event.target.value=0 : 
+      setMedQty(event.target.value)
+  }
   const handleCleanUp = () => {
+    setSearchParams('')
     setMedCode('')
     setMedQty('')
-    setSearchParams('')
   }
   return (
     <Paper elevation='0' sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
@@ -91,14 +90,14 @@ export default function InventoryCRUD() {
               />
             </Grid>
             <Grid item>
-              <Button variant="contained" onClick={handleSearchButton} sx={{ mr: 1 }}>
-                Buscar
-              </Button>
-              <Tooltip title="Reload">
+              <Tooltip title="Reset">
                 <IconButton onClick={handleReload}>
                   <RefreshIcon color="inherit" sx={{ display: 'block' }} />
                 </IconButton>
               </Tooltip>
+              <Button variant="contained" onClick={handleSearchButton} sx={{ mr: 1 }}>
+                Buscar
+              </Button>
             </Grid>
           </Grid>
         </Toolbar>
