@@ -1,20 +1,24 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { AppBar,
-    Button,
-    Grid,
-    IconButton,
-    Toolbar,
-    Tooltip,
-    Typography
+import {
+  AppBar,
+  Button,
+  Grid,
+  IconButton,
+  Toolbar,
+  Tooltip,
+  Typography
 } from '@mui/material';
 /* Icons */
 import MenuIcon from '@mui/icons-material/Menu';
 import DisciplineIcon from '../data/DisciplineIcon.js';
+import MitraIcon from '../data/MitraIcon.js';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
-function Header({onDrawerToggle}) {
+function Header({ onDrawerToggle }) {
+
+  const [isHover, setIsHover] = React.useState(false)
 
   return (
     <React.Fragment>
@@ -27,7 +31,7 @@ function Header({onDrawerToggle}) {
       >
         <Toolbar>
           <Grid container direction="row" justifyContent="flex-start" alignItems="center" spacing={2}>
-          <Grid sx={{ display: { sm: 'block', xs: 'block' } }} item>
+            <Grid sx={{ display: { sm: 'block', xs: 'block' } }} item>
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -38,7 +42,15 @@ function Header({onDrawerToggle}) {
               </IconButton>
             </Grid>
             <Grid item>
-                <DisciplineIcon size="64px"/>
+              <div
+                onMouseEnter={() => setIsHover(true)}
+                onMouseLeave={() => setIsHover(false)}
+              >
+                {isHover ?
+                  <DisciplineIcon size="64px" /> :
+                  <MitraIcon size="64px" />
+                }
+              </div>
             </Grid>
             <Grid item xs>
               <Typography color="inherit" variant="h5" component="h1">
