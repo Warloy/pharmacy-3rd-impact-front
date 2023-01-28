@@ -1,20 +1,23 @@
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import { styled } from '@mui/material/styles';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import IconButton from '@mui/material/IconButton';
+import { 
+    Toolbar, 
+    Typography, 
+    Paper, 
+    Grid, 
+    Button, 
+    TextField,
+    Tooltip,
+    FormControl,
+    InputLabel,
+    OutlinedInput,
+    InputAdornment,
+    Select,
+    MenuItem,
+    IconButton,
+} from '@mui/material';
+/* Icons */
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
@@ -60,40 +63,50 @@ export default function UserCRUD() {
     const loadForm = (event) => {  
     }
     const handleReload = () => {
-      setSearchParams('')
+        setSearchParams('')
     }
     const handleSearchParams = (event) => {
-      event.target.value === null ? setSearchParams('') : 
-      setSearchParams(event.target.value)
+        let value = event.target.value
+        value === null ? setSearchParams('') : 
+        setSearchParams(value)
     }
     const handleSearchButton = () => {
       searchParams === null ? setUserIdentification('') : 
       setUserIdentification(searchParams)
     }
     const handleUserMail = (event) => { 
-        setUserMail(event.target.value)
+        let value = event.target.value
+        setUserMail(value)
     }
     const handleUserPassword = (event) => { 
-        setUserPassword(event.target.value)
+        let value = event.target.value
+        setUserPassword(value)
     }
     const handleUserIdentification = (event) => { 
-        setUserIdentification(event.target.value)
+        let value = event.target.value
+        setUserIdentification(value)
     }
     const handleOfficeCode = (event) => { 
-        setOfficeCode(event.target.value)
+        let value = event.target.value
+        setOfficeCode(value)
     }
     const handleUserName = (event) => { 
-        setUserName(event.target.value)
+        let value = event.target.value
+        setUserName(value)
     }
     const handleUserLastName = (event) => { 
-        setUserLastName(event.target.value)
+        let value = event.target.value
+        setUserLastName(value)
     }
     const handleUserPhone = (event) => { 
-        setUserPhone(event.target.value)
+        let value = event.target.value
+        setUserPhone(value)
     }
     const handleTypeList = (event) => {
-        setUserType(event.target.value);
+        let value = event.target.value
+        setUserType(value)
     }
+
     const handleCleanUp = () => {
       setSearchParams('')
       setUserMail('')
@@ -105,6 +118,7 @@ export default function UserCRUD() {
       setUserPhone('')
       setUserType('')
     }
+    
     return (
     <Paper elevation='0' sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
       <AppBar

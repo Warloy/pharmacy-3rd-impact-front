@@ -1,13 +1,15 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import AppBar from '@mui/material/AppBar';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
+import { AppBar,
+    Button,
+    Grid,
+    IconButton,
+    Toolbar,
+    Tooltip,
+    Typography
+} from '@mui/material';
+/* Icons */
 import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
 import DisciplineIcon from '../data/DisciplineIcon.js';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
@@ -40,7 +42,7 @@ function Header({onDrawerToggle}) {
             </Grid>
             <Grid item xs>
               <Typography color="inherit" variant="h5" component="h1">
-                {`  Mitra: Inventory Management System`}
+                {`  Mitra: Inventory Manager`}
               </Typography>
             </Grid>
             <Grid item>
@@ -51,7 +53,7 @@ function Header({onDrawerToggle}) {
                   color="inherit"
                   size="small"
                 >
-                  {`Viega`}
+                  {`Viega (Admin)`}
                 </Button>
               </Tooltip>
             </Grid>

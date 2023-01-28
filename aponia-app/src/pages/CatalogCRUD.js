@@ -1,20 +1,22 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import { styled } from '@mui/material/styles';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import IconButton from '@mui/material/IconButton';
+import { AppBar,
+    styled,
+    Toolbar,
+    Typography,
+    Paper,
+    Grid,
+    Button,
+    TextField,
+    Tooltip,
+    FormControl,
+    InputLabel,
+    OutlinedInput,
+    InputAdornment,
+    Select,
+    MenuItem,
+    IconButton,
+} from '@mui/material';
+/* Icons */
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
@@ -70,18 +72,25 @@ export default function CatalogCRUD() {
     setSearchParams('')
   }
   const handleSearchParams = (event) => {
-    event.target.value === null ? setSearchParams('') : 
-    setSearchParams(event.target.value)
+    let value = event.target.value
+    value === null ? setSearchParams('') : 
+    setSearchParams(value)
   }
   const handleSearchButton = () => {
     searchParams === null ? setMedCode('') : 
     setMedCode(searchParams)
   }
+  const handleMedCode = (event) => { 
+    let value = event.target.value
+    setMedCode(value)
+  }
   const handleMedDesc = (event) => { 
-      setMedDesc(event.target.value)
+    let value = event.target.value
+      setMedDesc(value)
   }
   const handlePresentationList = (event) => {
-      setPresentation(event.target.value);
+    let value = event.target.value
+      setPresentation(value);
   }
   const handleCleanUp = () => {
     setSearchParams('')
@@ -108,6 +117,7 @@ export default function CatalogCRUD() {
                 placeholder="Buscar por código"
                 value={searchParams}
                 onChange={handleSearchParams}
+                inputProps={{maxlength:15}}
                 InputProps={{
                   disableUnderline: true,
                   sx: { fontSize: 'default' },
@@ -138,7 +148,8 @@ export default function CatalogCRUD() {
                     <OutlinedInput
                         id="catalog-code"
                         value={medCode}
-                        disabled
+                        onChange={handleMedCode}
+                        inputProps={{maxlength:15}}
                         endAdornment={
                         <InputAdornment position="end">
                             <QrCode2Icon />
@@ -155,6 +166,7 @@ export default function CatalogCRUD() {
                         id="catalog-desc"
                         value={medDesc}
                         onChange={handleMedDesc}
+                        inputProps={{maxlength:100}}
                         multiline
                         maxRows='1'
                         endAdornment={

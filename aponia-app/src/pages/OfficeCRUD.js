@@ -1,18 +1,20 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import { styled } from '@mui/material/styles';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
+import { AppBar, 
+    styled,
+    Toolbar,
+    Typography,
+    Paper,
+    Grid,
+    Button,
+    TextField,
+    Tooltip,
+    FormControl,
+    InputLabel,
+    OutlinedInput,
+    InputAdornment,
+    IconButton,
+} from '@mui/material';
+/* Icons */
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
@@ -38,12 +40,17 @@ export default function OfficeCRUD() {
     setSearchParams('')
   }
   const handleSearchParams = (event) => {
-    event.target.value === null ? setSearchParams('') : 
-    setSearchParams(event.target.value)
+    let value = event.target.value
+    value === null ? setSearchParams('') : 
+    setSearchParams(value)
   }
   const handleSearchButton = () => {
     searchParams === null ? setOfficeCode('') : 
     setOfficeCode(searchParams)
+  }
+  const handleOfficeCode = (event) => {
+    let value = event.target.value
+    setOfficeCode(value)
   }
   const handleCleanUp = () => {
     setSearchParams('')
@@ -98,7 +105,7 @@ export default function OfficeCRUD() {
                     <OutlinedInput
                         id="office-code"
                         value={officeCode}
-                        disabled
+                        onChange={handleOfficeCode}
                         endAdornment={
                         <InputAdornment position="end">
                             <QrCode2Icon />

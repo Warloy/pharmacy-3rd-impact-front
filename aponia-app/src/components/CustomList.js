@@ -1,15 +1,19 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
-import Divider from '@mui/material/Divider';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Paper from '@mui/material/Paper';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
+import { Box,
+    styled,
+    ThemeProvider,
+    createTheme,
+    Divider,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Paper,
+    IconButton,
+    Tooltip
+} from '@mui/material';
+/* Icons */
 import ArrowRight from '@mui/icons-material/ArrowRight';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import Settings from '@mui/icons-material/Settings';
@@ -19,37 +23,6 @@ import DomainAddIcon from '@mui/icons-material/DomainAdd';
 import PublicIcon from '@mui/icons-material/Public';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
-
-const categories = [
-    {
-        id: 'Administrar',
-        secondary: 'Módulo de gestión administrativo',
-        type: 0,
-        children: [
-        { id: 'Catálogo de medicina', icon: <MedicationIcon />, link:'/admin/catalog' },
-        { id: 'Gestión de usuarios', icon: <ManageAccountsIcon />, link:'/admin/user' },
-        { id: 'Gestión de sucursales', icon: <DomainAddIcon />, link:'/admin/office' },
-        ],
-    },
-    {
-        id: 'Reportes',
-        secondary: 'Módulo de reportes y control',
-        type: 1,
-        children: [
-        { id: 'Por Sucursal', icon: <SettingsIcon />, link:'/admin/reports' },
-        { id: 'Global', icon: <PublicIcon />, link:'/admin/reports/global' },
-        ],
-    },
-    {
-        id: 'Acciones',
-        secondary: 'Módulos de acción',
-        type: 1,
-        children: [
-        { id: 'Inventario', icon: <MedicationIcon />, link:'/agent/inventory' },
-        { id: 'Reportes', icon: <SettingsIcon />, link:'/agent/reports' },
-        ],
-    },
-];
 
 const LogoNav = styled(List)({
   '& .MuiListItemButton-root': {
@@ -65,8 +38,49 @@ const LogoNav = styled(List)({
   },
 });
 
-export default function CustomizedList(userType) {
-  const [open, setOpen] = React.useState(false);
+const categories = [
+  {
+      id: 'Administrar',
+      secondary: 'Módulo de gestión administrativo',
+      type: 0,
+      children: [
+      { id: 'Catálogo de medicina', icon: <MedicationIcon />, link:'/admin/catalog' },
+      { id: 'Gestión de usuarios', icon: <ManageAccountsIcon />, link:'/admin/user' },
+      { id: 'Gestión de sucursales', icon: <DomainAddIcon />, link:'/admin/office' },
+      ],
+  },
+  {
+      id: 'Reportes',
+      secondary: 'Módulo de reportes y control',
+      type: 0,
+      children: [
+      { id: 'Por Sucursal', icon: <SettingsIcon />, link:'/admin/reports' },
+      { id: 'Global', icon: <PublicIcon />, link:'/admin/reports/global' },
+      ],
+  },
+  {
+      id: 'Acciones',
+      secondary: 'Módulos de acción',
+      type: 1,
+      children: [
+      { id: 'Inventario', icon: <MedicationIcon />, link:'/agent/inventory' },
+      { id: 'Reportes', icon: <SettingsIcon />, link:'/agent/reports' },
+      ],
+  },
+];
+
+export default function CustomizedList({ userType = 0 }) {
+
+  const [openCategories, setOpenCategories] = React.useState({
+    Administrar: false,
+    Reportes: false,
+    Acciones: false
+  })
+
+  const handleChange = (prop) => () => {
+    setOpenCategories({ ...openCategories, [prop]: !openCategories[prop] })
+  }
+
   return (
     <Box sx={{ display: 'flex' }}>
       <ThemeProvider
@@ -151,22 +165,25 @@ export default function CustomizedList(userType) {
               </Tooltip>
             </ListItem>
             <Divider />
-            {categories.map(({id,secondary,type,children}) => (
+            {categories
+            .filter(item => item.type === userType)
+            .map(({id, secondary, children}) => (
                 <Box
                     key={id}
                     sx={{
-                    bgcolor: open ? 'rgba(71, 98, 130, 0.2)' : null,
-                    pb: open ? 2 : 0,
+                    bgcolor: openCategories[id] ? 'rgba(71, 98, 130, 0.2)' : null,
+                    pb: openCategories[id] ? 2 : 0,
+                    width: 256
                 }}
-                >
+                >    
                 <ListItemButton
                     alignItems="flex-start"
-                    onClick={() => setOpen(!open)}
+                    onClick={handleChange(id)}
                     sx={{
                     px: 3,
                     pt: 2.5,
-                    pb: open ? 0 : 2.5,
-                    '&:hover, &:focus': { '& svg': { opacity: open ? 1 : 0 } },
+                    pb: openCategories[id] ? 0 : 2.5,
+                    '&:hover, &:focus': { '& svg': { opacity: openCategories[id] ? 1 : 0 } },
                     }}
                 >
                     <ListItemText
@@ -182,7 +199,7 @@ export default function CustomizedList(userType) {
                         noWrap: true,
                         fontSize: 12,
                         lineHeight: '16px',
-                        color: open ? 'rgba(0,0,0,0)' : 'rgba(255,255,255,0.5)',
+                        color: openCategories[id] ? 'rgba(0,0,0,0)' : 'rgba(255,255,255,0.5)',
                     }}
                     sx={{ my: 0 }}
                     />
@@ -190,12 +207,12 @@ export default function CustomizedList(userType) {
                     sx={{
                         mr: -1,
                         opacity: 0,
-                        transform: open ? 'rotate(-180deg)' : 'rotate(0)',
+                        transform: openCategories[id] ? 'rotate(-180deg)' : 'rotate(0)',
                         transition: '0.2s',
                     }}
                     />
                 </ListItemButton>
-                {open &&
+                {openCategories[id] &&
                     children.map((item, link) => (
                     <ListItemButton
                         key={item.id}
