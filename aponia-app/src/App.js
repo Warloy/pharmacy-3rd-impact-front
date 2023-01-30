@@ -15,6 +15,7 @@ import UserCRUD from './pages/UserCRUD';
 import CatalogCRUD from './pages/CatalogCRUD';
 import OfficeCRUD from './pages/OfficeCRUD';
 import InventoryCRUD from './pages/InventoryCRUD';
+import Login from './pages/Login';
 
 function App() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -46,6 +47,8 @@ function App() {
             <Routes>
                 {/* Landing*/}
                 <Route exact path='/' element={<div/>}/>
+                {/* Login */}
+                <Route exact path='/login' element = {<Login/>}/>
                 {/* Admin/Cruds*/}
                 <Route path='/admin/catalog' element={<CatalogCRUD/>}/>
                 <Route path='/admin/user' element={<UserCRUD/>}/>
