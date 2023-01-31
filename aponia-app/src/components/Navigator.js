@@ -6,7 +6,7 @@ export default function Navigator(props) {
   const { ...other } = props;
 
   return (
-    <Drawer variant="temporary" {...other}>
+    <Drawer variant="temporary" PaperProps={{ style: { width: 256 } }} {...other}>
       <CustomizedList
         userType={0}
       >

@@ -19,7 +19,6 @@ import Login from './pages/Login';
 
 function App() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const drawerWidth = 256;
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -33,8 +32,6 @@ function App() {
           sx={{ width: { sm: 0 }, flexShrink: { sm: 0 } }}
         >
         <Navigator
-              PaperProps={{ style: { width: drawerWidth } }}
-              variant="temporary"
               open={mobileOpen}
               onClose={handleDrawerToggle}
         />
@@ -46,7 +43,7 @@ function App() {
           <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
             <Routes>
                 {/* Landing*/}
-                <Route exact path='/' element={<div/>}/>
+                <Route exact path='/' element={<Login/>}/>
                 {/* Login */}
                 <Route exact path='/login' element = {<Login/>}/>
                 {/* Admin/Cruds*/}
