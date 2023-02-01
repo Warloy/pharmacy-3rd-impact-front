@@ -117,6 +117,7 @@ export default function CatalogCRUD() {
                 placeholder="Buscar por código"
                 value={searchParams}
                 onChange={handleSearchParams}
+                autoFocus
                 inputProps={{maxlength:15}}
                 InputProps={{
                   disableUnderline: true,

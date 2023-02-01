@@ -138,6 +138,7 @@ export default function UserCRUD() {
                 placeholder="Buscar por cédula"
                 value={searchParams}
                 onChange={handleSearchParams}
+                autoFocus
                 InputProps={{
                   disableUnderline: true,
                   sx: { fontSize: 'default' },

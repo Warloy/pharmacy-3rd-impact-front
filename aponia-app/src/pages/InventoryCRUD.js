@@ -87,6 +87,7 @@ export default function InventoryCRUD() {
                 placeholder="Buscar por código de medicina"
                 value={searchParams}
                 onChange={handleSearchParams}
+                autoFocus
                 InputProps={{
                   disableUnderline: true,
                   sx: { fontSize: 'default' },

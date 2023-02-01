@@ -1,11 +1,11 @@
 import axios from 'axios'
 
-export const BASE_URL = ''
+export const BASE_URL = 'https://pharmacy-3rd-impact-back-production.up.railway.app/'
 
 export const http = axios.create({
   baseURL: BASE_URL,
   headers: {
-    'Content-type': 'application/json',
+    'Content-Type': 'application/json',
     'Accept': 'application/json'
   }
 })

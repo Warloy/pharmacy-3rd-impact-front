@@ -75,6 +75,7 @@ export default function OfficeCRUD() {
                 placeholder="Buscar por código de sucursal"
                 value={searchParams}
                 onChange={handleSearchParams}
+                autoFocus
                 InputProps={{
                   disableUnderline: true,
                   sx: { fontSize: 'default' },
