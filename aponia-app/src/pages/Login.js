@@ -8,18 +8,27 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 //import {ReactComponent as MitraLockup} from './icons/mitra-lockup.svg';
 
-
+import { login } from '../services/auth/authService'
 
 const theme = createTheme();
 
 export default function Login() {
-	const handleSubmit = (event) => {
+
+	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		console.log({
-			username: data.get('username'),
-			password: data.get('password'),
-		});
+
+		const email = data.get('email')
+		const password = data.get('password')
+
+		const response = await login({ 
+			mail: email, 
+			password: password 
+		})
+
+		console.log(response)
+
+
 	};
 
 	return (
@@ -67,7 +76,7 @@ export default function Login() {
 						</Button>
 					</Box>
 				</Box>
-				
+
 			</Container>
 		</ThemeProvider>
 	);
