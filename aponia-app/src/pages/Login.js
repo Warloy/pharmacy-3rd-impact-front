@@ -9,25 +9,67 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 //import {ReactComponent as MitraLockup} from './icons/mitra-lockup.svg';
 
 import { login } from '../services/auth/authService'
+import { setSession } from '../services/jwt';
+import useAuthContext from '../hooks/useAuthContext';
+import useLoading from '../hooks/useLoading';
 
 const theme = createTheme();
 
 export default function Login() {
 
+	const { dispatch } = useAuthContext()
+	const { startLoading, stopLoading, isLoading } = useLoading()
+
 	const handleSubmit = async (event) => {
-		event.preventDefault();
-		const data = new FormData(event.currentTarget);
+		startLoading()
+		try {
+			event.preventDefault();
+			const data = new FormData(event.currentTarget);
 
-		const email = data.get('email')
-		const password = data.get('password')
+			const email = data.get('email')
+			const password = data.get('password')
 
-		const response = await login({ 
-			mail: email, 
-			password: password 
-		})
+			const { Data } = await login({
+				mail: email,
+				password: password
+			})
 
-		console.log(response)
+			if (Data?.token) {
 
+				const userData = {
+					name: Data?.name,
+					email: email,
+					type: Data?.type?.toString()
+				}
+
+				setSession(Data?.id, Data?.token, userData)
+
+				localStorage.setItem('@id', Data?.id)
+				localStorage.setItem('@token', Data?.token)
+				localStorage.setItem('@user', JSON.stringify(userData))
+
+				dispatch({
+					type: 'LOGIN',
+					payload: {
+						user: {
+							id: Data?.id,
+							token: Data?.token,
+							...userData
+						}
+					}
+				})
+
+				console.log(`${Data?.name} logged in`)
+
+
+
+			}
+
+		} catch (error) {
+			console.log(`Login error: ${error}`)
+		}
+
+		stopLoading()
 
 	};
 
@@ -67,6 +109,7 @@ export default function Login() {
 							autoComplete="off"
 						/>
 						<Button
+							disabled={isLoading}
 							type="submit"
 							fullWidth
 							variant="contained"

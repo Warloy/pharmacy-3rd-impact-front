@@ -17,15 +17,28 @@ import CatalogCRUD from './pages/CatalogCRUD';
 import OfficeCRUD from './pages/OfficeCRUD';
 import InventoryCRUD from './pages/InventoryCRUD';
 import Login from './pages/Login';
+import Landing from './pages/Landing';
 
 /* AuthProvider */
 import { AuthProvider } from './context/AuthContext';
+import useAuthContext from './hooks/useAuthContext';
 
 function App() {
+  /*
+    const {
+      state: { user },
+    } = useAuthContext()
+    */
+
+
+  const type = JSON.parse(localStorage.getItem('@user'))?.type || null
+  const token = localStorage.getItem('@token') || null
+
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
   return (
     <AuthProvider>
       <Router>
@@ -48,16 +61,27 @@ function App() {
               <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
                 <Routes>
                   {/* Landing*/}
-                  <Route exact path='/' element={<Login />} />
-                  {/* Login */}
-                  <Route exact path='/login' element={<Login />} />
-                  {/* Admin/Cruds*/}
-                  <Route path='/admin/catalog' element={<CatalogCRUD />} />
-                  <Route path='/admin/user' element={<UserCRUD />} />
-                  <Route path='/admin/office' element={<OfficeCRUD />} />
-                  {/* Admin/Reports*/}
-                  {/* Agent*/}
-                  <Route path='/agent/inventory' element={<InventoryCRUD />} />
+                  <Route exact path='/' element={<Landing />} />
+                  {!token ?
+                    <>
+                      {/* Login */}
+                      <Route exact path='/login' element={<Login />} />
+                    </>
+                    : type === '0' ?
+                      <>
+                        {/* Admin/Cruds*/}
+                        <Route path='/admin/catalog' element={<CatalogCRUD />} />
+                        <Route path='/admin/user' element={<UserCRUD />} />
+                        <Route path='/admin/office' element={<OfficeCRUD />} />
+                      </>
+                      :
+                      <>
+                        {/* Admin/Reports*/}
+                        {/* Agent*/}
+                        <Route path='/agent/inventory' element={<InventoryCRUD />} />
+                      </>
+                  }
+
                 </Routes>
               </Box>
               <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>

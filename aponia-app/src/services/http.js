@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const BASE_URL = 'https://pharmacy-3rd-impact-back-production.up.railway.app/api/'
+export const BASE_URL = 'https://pharmacy-3rd-impact-back-production.up.railway.app/'
 
 export const http = axios.create({
   baseURL: BASE_URL,

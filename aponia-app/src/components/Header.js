@@ -18,6 +18,10 @@ const lightColor = 'rgba(255, 255, 255, 0.7)';
 
 function Header({ onDrawerToggle }) {
 
+  const name = JSON.parse(localStorage.getItem('@user'))?.name || null
+  const type = JSON.parse(localStorage.getItem('@user'))?.type || null
+  const role = type === '0' ? `Admin` : `Agente` 
+  const session = `${name} (${role})`
   const [isHover, setIsHover] = React.useState(false)
 
   return (
@@ -65,7 +69,7 @@ function Header({ onDrawerToggle }) {
                   color="inherit"
                   size="small"
                 >
-                  {`Viega (Admin)`}
+                  {name ? `${session}`: ` `}
                 </Button>
               </Tooltip>
             </Grid>

@@ -1,17 +1,18 @@
 import * as React from 'react';
-import { Box,
-    styled,
-    ThemeProvider,
-    createTheme,
-    Divider,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Paper,
-    IconButton,
-    Tooltip
+import {
+  Box,
+  styled,
+  ThemeProvider,
+  createTheme,
+  Divider,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Paper,
+  IconButton,
+  Tooltip
 } from '@mui/material';
 /* Icons */
 import ArrowRight from '@mui/icons-material/ArrowRight';
@@ -23,6 +24,8 @@ import DomainAddIcon from '@mui/icons-material/DomainAdd';
 import PublicIcon from '@mui/icons-material/Public';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
+
+import useAuthContext from '../hooks/useAuthContext';
 
 const LogoNav = styled(List)({
   '& .MuiListItemButton-root': {
@@ -40,36 +43,45 @@ const LogoNav = styled(List)({
 
 const categories = [
   {
-      id: 'Administrar',
-      secondary: 'Módulo de gestión administrativo',
-      type: 0,
-      children: [
-      { id: 'Catálogo de medicina', icon: <MedicationIcon />, link:'/admin/catalog' },
-      { id: 'Gestión de usuarios', icon: <ManageAccountsIcon />, link:'/admin/user' },
-      { id: 'Gestión de sucursales', icon: <DomainAddIcon />, link:'/admin/office' },
-      ],
+    id: 'Administrar',
+    secondary: 'Módulo de gestión administrativo',
+    type: '0',
+    children: [
+      { id: 'Catálogo de medicina', icon: <MedicationIcon />, link: '/admin/catalog' },
+      { id: 'Gestión de usuarios', icon: <ManageAccountsIcon />, link: '/admin/user' },
+      { id: 'Gestión de sucursales', icon: <DomainAddIcon />, link: '/admin/office' },
+    ],
   },
   {
-      id: 'Reportes',
-      secondary: 'Módulo de reportes y control',
-      type: 0,
-      children: [
-      { id: 'Por Sucursal', icon: <SettingsIcon />, link:'/admin/reports' },
-      { id: 'Global', icon: <PublicIcon />, link:'/admin/reports/global' },
-      ],
+    id: 'Reportes',
+    secondary: 'Módulo de reportes y control',
+    type: '0',
+    children: [
+      { id: 'Por Sucursal', icon: <SettingsIcon />, link: '/admin/reports' },
+      { id: 'Global', icon: <PublicIcon />, link: '/admin/reports/global' },
+    ],
   },
   {
-      id: 'Acciones',
-      secondary: 'Módulos de acción',
-      type: 1,
-      children: [
-      { id: 'Inventario', icon: <MedicationIcon />, link:'/agent/inventory' },
-      { id: 'Reportes', icon: <SettingsIcon />, link:'/agent/reports' },
-      ],
+    id: 'Acciones',
+    secondary: 'Módulos de acción',
+    type: '1',
+    children: [
+      { id: 'Inventario', icon: <MedicationIcon />, link: '/agent/inventory' },
+      { id: 'Reportes', icon: <SettingsIcon />, link: '/agent/reports' },
+    ],
   },
 ];
 
-export default function CustomizedList({ userType = 0 }) {
+export default function CustomizedList() {
+
+  const {
+    state: { user },
+    dispatch
+  } = useAuthContext()
+
+  const userType = JSON.parse(localStorage.getItem('@user'))?.type || null
+
+  const token = localStorage.getItem('@token') || null
 
   const [openCategories, setOpenCategories] = React.useState({
     Administrar: false,
@@ -79,6 +91,10 @@ export default function CustomizedList({ userType = 0 }) {
 
   const handleChange = (prop) => () => {
     setOpenCategories({ ...openCategories, [prop]: !openCategories[prop] })
+  }
+
+  const handleLogOut = (event) => () => {
+
   }
 
   return (
@@ -99,7 +115,7 @@ export default function CustomizedList({ userType = 0 }) {
           },
         })}
       >
-        <Paper elevation={0} sx={{ maxWidth: 256 }}>
+        <Paper elevation={0} sx={{ minWidth: 256, maxWidth: 256 }}>
           <LogoNav component="nav" disablePadding>
             <ListItemButton component="a" href="/">
               <ListItemIcon sx={{ fontSize: 20 }}> {/*<DisciplineIcon size="32px"/>*/} </ListItemIcon>
@@ -121,7 +137,15 @@ export default function CustomizedList({ userType = 0 }) {
                   <LogoutIcon color="primary" />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Cerrar Sesión"
+                  onClick={() => {
+                    if (token) {
+                      dispatch({ type: 'LOGOUT' })
+                      window.location.href = '/login'
+                    } else {
+                      window.location.href = '/login'
+                    }
+                  }}
+                  primary={token ? "Cerrar Sesión" : "Iniciar Sesión"}
                   primaryTypographyProps={{
                     color: 'primary',
                     fontWeight: 'medium',
@@ -166,70 +190,70 @@ export default function CustomizedList({ userType = 0 }) {
             </ListItem>
             <Divider />
             {categories
-            .filter(item => item.type === userType)
-            .map(({id, secondary, children}) => (
+              .filter(item => item.type === userType)
+              .map(({ id, secondary, children }) => (
                 <Box
-                    key={id}
-                    sx={{
+                  key={id}
+                  sx={{
                     bgcolor: openCategories[id] ? 'rgba(71, 98, 130, 0.2)' : null,
                     pb: openCategories[id] ? 2 : 0,
                     width: 256
-                }}
-                >    
-                <ListItemButton
+                  }}
+                >
+                  <ListItemButton
                     alignItems="flex-start"
                     onClick={handleChange(id)}
                     sx={{
-                    px: 3,
-                    pt: 2.5,
-                    pb: openCategories[id] ? 0 : 2.5,
-                    '&:hover, &:focus': { '& svg': { opacity: openCategories[id] ? 1 : 0 } },
+                      px: 3,
+                      pt: 2.5,
+                      pb: openCategories[id] ? 0 : 2.5,
+                      '&:hover, &:focus': { '& svg': { opacity: openCategories[id] ? 1 : 0 } },
                     }}
-                >
+                  >
                     <ListItemText
-                    primary={id}
-                    primaryTypographyProps={{
+                      primary={id}
+                      primaryTypographyProps={{
                         fontSize: 15,
                         fontWeight: 'medium',
                         lineHeight: '20px',
                         mb: '2px',
-                    }}
-                    secondary={secondary}
-                    secondaryTypographyProps={{
+                      }}
+                      secondary={secondary}
+                      secondaryTypographyProps={{
                         noWrap: true,
                         fontSize: 12,
                         lineHeight: '16px',
                         color: openCategories[id] ? 'rgba(0,0,0,0)' : 'rgba(255,255,255,0.5)',
-                    }}
-                    sx={{ my: 0 }}
+                      }}
+                      sx={{ my: 0 }}
                     />
                     <KeyboardArrowDown
-                    sx={{
+                      sx={{
                         mr: -1,
                         opacity: 0,
                         transform: openCategories[id] ? 'rotate(-180deg)' : 'rotate(0)',
                         transition: '0.2s',
-                    }}
+                      }}
                     />
-                </ListItemButton>
-                {openCategories[id] &&
+                  </ListItemButton>
+                  {openCategories[id] &&
                     children.map((item, link) => (
-                    <ListItemButton
+                      <ListItemButton
                         key={item.id}
                         sx={{ py: 0, minHeight: 32, color: 'rgba(255,255,255,.8)' }}
                         href={item.link}
-                    >
+                      >
                         <ListItemIcon sx={{ color: 'inherit' }}>
-                        {item.icon}
+                          {item.icon}
                         </ListItemIcon>
                         <ListItemText
-                        primary={item.id}
-                        primaryTypographyProps={{ fontSize: 14, fontWeight: 'medium' }}
+                          primary={item.id}
+                          primaryTypographyProps={{ fontSize: 14, fontWeight: 'medium' }}
                         />
-                    </ListItemButton>
+                      </ListItemButton>
                     ))}
-                </Box> 
-            ))}
+                </Box>
+              ))}
           </LogoNav>
         </Paper>
       </ThemeProvider>

@@ -26,6 +26,7 @@ const stateReducer = (state, action) => {
 
     case 'LOGIN': {
       const { user } = action.payload
+      window.location.href = '/'
       return {
         ...state,
         isAuthenticated: true,
@@ -34,6 +35,9 @@ const stateReducer = (state, action) => {
     }
 
     case 'LOGOUT': {
+      localStorage.removeItem('@id')
+      localStorage.removeItem('@user')
+      localStorage.removeItem('@token')
       return {
         ...state,
         isAuthenticated: false,
