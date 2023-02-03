@@ -16,6 +16,9 @@ import { AppBar,
     MenuItem,
     IconButton,
 } from '@mui/material';
+import Toaster from '../hooks/useToast';
+import { getMedicine, createMedicine, deleteMedicine, updateMedicine } from '../services/medicine/medicineAPI'
+
 /* Icons */
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -24,6 +27,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import MedicationIcon from '@mui/icons-material/Medication';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const categories = [
     {
@@ -61,13 +65,15 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function CatalogCRUD() {
+  const {showInfoToast, showWarningToast, showSuccessToast, showErrorToast} = Toaster();
+  const [exists, setExists] = React.useState(false);
+  const [searched, setSearched] = React.useState(false);
   const [searchParams, setSearchParams] = React.useState('');
+  const [medicine, setMedicine] = React.useState([]);
   const [medCode, setMedCode] = React.useState('');
   const [medDesc, setMedDesc] = React.useState('');
   const [presentation, setPresentation] = React.useState('');
-  
-  const loadForm = (event) => {  
-  }
+
   const handleReload = () => {
     setSearchParams('')
   }
@@ -77,8 +83,32 @@ export default function CatalogCRUD() {
     setSearchParams(value)
   }
   const handleSearchButton = () => {
-    searchParams === null ? setMedCode('') : 
-    setMedCode(searchParams)
+    if (searchParams === '') {
+      showWarningToast(`Debe ingresar el código a buscar`)
+    } else {
+      try{
+        getMedicine(searchParams)
+          .then((res)=>{
+            setMedicine(res || [])
+            setMedCode(res.code)
+            setMedDesc(res.desc)
+            setPresentation(res.presentation)
+            showSuccessToast(`Se encontró medicina con código ${searchParams}.`)
+            setSearched(true)
+            setExists(true)
+            console.log(res)
+          })
+          .catch((err)=>{
+            console.log(`Error en la búsqueda: ${err}`)
+            setMedCode(searchParams)
+            setSearched(true)
+            showInfoToast(`No se encontró medicina con código ${searchParams}. Creando un nuevo registro.`)
+          })
+      } catch(error){
+        console.log(`Search error: ${error}`)
+			  showErrorToast('Ocurrió un eror en la búsqueda.')
+      }
+    }
   }
   const handleMedCode = (event) => { 
     let value = event.target.value
@@ -92,11 +122,74 @@ export default function CatalogCRUD() {
     let value = event.target.value
       setPresentation(value);
   }
+  const handleSubmit = () => {
+    if (medDesc==='' || presentation===''){
+      showWarningToast(`Faltan datos por llenar en el formulario.`)
+    } else {
+      if (!exists){
+        try{
+          createMedicine({code: medCode,
+                          desc: medDesc,
+                          presentation: presentation})
+            .then((res)=>{
+              showSuccessToast(`Medicina ${medCode} registrada exitosamente.`)
+              console.log(`Submit successful: ${res}`)
+              handleCleanUp()
+            })
+            .catch((err)=>{
+              showWarningToast(`Ya existe una medicina con el código ${medCode}.`)
+              console.log(`Submit error: ${err}`)
+            })
+        } catch(error){
+          console.log(`Submit error: ${error}`)
+          showErrorToast('Ocurrió un eror al guardar los datos.')
+        }
+      } else {
+        try{
+          updateMedicine(medicine.MID, {code: medCode,
+                          desc: medDesc,
+                          presentation: presentation})
+            .then((res)=>{
+              showSuccessToast(`Medicina ${medCode} actualizada exitosamente.`)
+              console.log(`Submit successful: ${res}`)
+              handleCleanUp()
+            })
+            .catch((err)=>{
+              showWarningToast(`Ocurrió un error al modificar la medicina ${medCode}.`)
+              console.log(`Submit error: ${err}`)
+            })
+        } catch(error){
+          console.log(`Submit error: ${error}`)
+          showErrorToast('Ocurrió un eror al guardar los datos.')
+        }
+      }
+    }
+  }
+  const handleDeletion = () => {
+    try{
+      deleteMedicine(medicine.MID)
+        .then((res)=>{
+          showSuccessToast(`Medicina ${medCode} eliminada exitosamente.`)
+          console.log(`Delete successful: ${res}`)
+          handleCleanUp()
+        })
+        .catch((err)=>{
+          showWarningToast(`Ocurrió un error al eliminar la medicina ${medCode}.`)
+          console.log(`Delete error: ${err}`)
+        })
+    } catch(error){
+      console.log(`Delete error: ${error}`)
+      showErrorToast('Ocurrió un eror al eliminar la medicina.')
+    }
+  }
   const handleCleanUp = () => {
     setSearchParams('')
     setMedCode('')
     setMedDesc('')
     setPresentation('')
+    setMedicine([])
+    setSearched(false)
+    setExists(false)
   }
     return (
     <Paper elevation='0' sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
@@ -132,7 +225,7 @@ export default function CatalogCRUD() {
                   <RefreshIcon color="inherit" sx={{ display: 'block' }} />
                 </IconButton>
               </Tooltip>
-              <Button variant="contained" onClick={handleSearchButton} sx={{ mr: 1 }}>
+              <Button variant="contained" onClick={handleSearchButton} disabled={searched} sx={{ mr: 1 }}>
                 Buscar
               </Button>
             </Grid>
@@ -150,6 +243,7 @@ export default function CatalogCRUD() {
                         id="catalog-code"
                         value={medCode}
                         onChange={handleMedCode}
+                        disabled
                         inputProps={{maxlength:15}}
                         endAdornment={
                         <InputAdornment position="end">
@@ -209,7 +303,10 @@ export default function CatalogCRUD() {
                 <Button variant="contained" onClick={handleCleanUp} startIcon={<CancelIcon />}>  Cancelar </Button>
             </Grid>
             <Grid item xs={4} md={2} sx={{ my: 5, mx: 2, width:1 }}>
-                <Button variant="contained" startIcon={<SaveIcon />}>  Guardar </Button>
+                <Button variant="contained" onClick={handleDeletion} startIcon={<DeleteIcon />} disabled={!exists}>  Eliminar </Button>
+            </Grid>
+            <Grid item xs={4} md={2} sx={{ my: 5, mx: 2, width:1 }}>
+                <Button variant="contained" onClick={handleSubmit} startIcon={<SaveIcon />} disabled={!searched}>  Guardar </Button>
             </Grid>
         </Grid>
     </Paper>

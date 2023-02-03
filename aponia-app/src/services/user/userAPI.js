@@ -37,7 +37,7 @@ const killUser = async (id) => {
     return data
 } 
 
-module.exports = {
+export {
     createUser,
     getAllUsers,
     getUser,

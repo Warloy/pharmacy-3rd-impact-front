@@ -14,10 +14,10 @@ import { AppBar,
     InputAdornment,
     IconButton,
 } from '@mui/material';
-/* Icons */
 import Toaster from '../hooks/useToast';
 import { getOffice, createOffice, deleteOffice } from '../services/office/officeAPI'
 
+/* Icons */
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import QrCode2Icon from '@mui/icons-material/QrCode2';

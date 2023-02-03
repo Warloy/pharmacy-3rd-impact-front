@@ -17,13 +17,13 @@ const getMedicinebyCode = async (id) => {
     return data?.Data
 }
 
-const createMedicine = async (user) => {
-    const { data } = await http.post(`${BASE_URL}`, user)
+const createMedicine = async (med) => {
+    const { data } = await http.post(`${BASE_URL}`, med)
     return data
 }
 
-const updateMedicine = async (id, user) => {
-    const { data } = await http.put(`${BASE_URL}/${id}`, user)
+const updateMedicine = async (id, med) => {
+    const { data } = await http.put(`${BASE_URL}/${id}`, med)
     return data
 }
 
@@ -37,7 +37,7 @@ const killMedicine = async (id) => {
     return data
 } 
 
-module.exports = {
+export {
     createMedicine,
     getAllMedicines,
     getMedicine,
