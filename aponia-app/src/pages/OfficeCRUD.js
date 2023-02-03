@@ -15,6 +15,8 @@ import { AppBar,
     IconButton,
 } from '@mui/material';
 /* Icons */
+import Toaster from '../hooks/useToast';
+
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
@@ -31,6 +33,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function OfficeCRUD() {
+  const {showInfoToast, showWarningToast} = Toaster()
   const [searchParams, setSearchParams] = React.useState('');
   const [officeCode, setOfficeCode] = React.useState('');
 
@@ -45,6 +48,12 @@ export default function OfficeCRUD() {
     setSearchParams(value)
   }
   const handleSearchButton = () => {
+    if (searchParams === '') {
+      showWarningToast(`Debe ingresar el código a buscar`)
+    } else {
+      
+    }
+    
     searchParams === null ? setOfficeCode('') : 
     setOfficeCode(searchParams)
   }
