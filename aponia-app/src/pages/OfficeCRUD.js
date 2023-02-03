@@ -16,12 +16,14 @@ import { AppBar,
 } from '@mui/material';
 /* Icons */
 import Toaster from '../hooks/useToast';
+import { getOffice } from '../services/office/officeAPI'
 
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -33,12 +35,13 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function OfficeCRUD() {
-  const {showInfoToast, showWarningToast} = Toaster()
+  const {showInfoToast, showWarningToast, showSuccessToast, showErrorToast} = Toaster();
+  const [exists, setExists] = React.useState(false);
+  const [searched, setSearched] = React.useState(false);
   const [searchParams, setSearchParams] = React.useState('');
+  const [office, setOffice] = React.useState([]);
   const [officeCode, setOfficeCode] = React.useState('');
 
-  const loadForm = (event) => {  
-  }
   const handleReload = () => {
     setSearchParams('')
   }
@@ -51,19 +54,41 @@ export default function OfficeCRUD() {
     if (searchParams === '') {
       showWarningToast(`Debe ingresar el código a buscar`)
     } else {
-      
+      try{
+        getOffice(searchParams)
+          .then((res)=>{
+            setOffice(res || [])
+            setOfficeCode(res.code)
+            showSuccessToast(`Se encontró la oficina con código ${searchParams}.`)
+            setSearched(true)
+            setExists(true)
+            console.log(res)
+          })
+          .catch((err)=>{
+            console.log(`Error en la búsqueda: ${err}`)
+            setOfficeCode(searchParams)
+            setSearched(true)
+            showInfoToast(`No se encontró la oficina con código ${searchParams}. Creando un nuevo registro...`)
+          })
+      } catch(error){
+        console.log(`Search error: ${error}`)
+			  showErrorToast('Ocurrió un eror en la búsqueda')
+      }
     }
-    
-    searchParams === null ? setOfficeCode('') : 
-    setOfficeCode(searchParams)
   }
   const handleOfficeCode = (event) => {
     let value = event.target.value
     setOfficeCode(value)
   }
+  const handleSubmit = () => {
+
+  }
   const handleCleanUp = () => {
     setSearchParams('')
     setOfficeCode('')
+    setOffice([])
+    setSearched(false)
+    setExists(false)
   }
     return (
     <Paper elevation='0' sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
@@ -85,6 +110,7 @@ export default function OfficeCRUD() {
                 value={searchParams}
                 onChange={handleSearchParams}
                 autoFocus
+                inputProps={{maxlength:15}}
                 InputProps={{
                   disableUnderline: true,
                   sx: { fontSize: 'default' },
@@ -98,7 +124,7 @@ export default function OfficeCRUD() {
                   <RefreshIcon color="inherit" sx={{ display: 'block' }} />
                 </IconButton>
               </Tooltip>
-              <Button variant="contained" onClick={handleSearchButton} sx={{ mr: 1 }}>
+              <Button variant="contained" onClick={handleSearchButton} disabled={searched} sx={{ mr: 1 }}>
                 Buscar
               </Button>
             </Grid>
@@ -116,6 +142,8 @@ export default function OfficeCRUD() {
                         id="office-code"
                         value={officeCode}
                         onChange={handleOfficeCode}
+                        inputProps={{maxlength:15}}
+                        disabled
                         endAdornment={
                         <InputAdornment position="end">
                             <QrCode2Icon />
@@ -131,7 +159,10 @@ export default function OfficeCRUD() {
                 <Button variant="contained" onClick={handleCleanUp} startIcon={<CancelIcon />}>  Cancelar </Button>
             </Grid>
             <Grid item xs={4} md={2} sx={{ my: 5, mx: 2, width:1 }}>
-                <Button variant="contained" startIcon={<SaveIcon />}>  Guardar </Button>
+                <Button variant="contained" startIcon={<DeleteIcon />} disabled={!exists}>  Eliminar </Button>
+            </Grid>
+            <Grid item xs={4} md={2} sx={{ my: 5, mx: 2, width:1 }}>
+                <Button variant="contained" startIcon={<SaveIcon />} disabled={!searched}>  Guardar </Button>
             </Grid>
         </Grid>
     </Paper>

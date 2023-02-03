@@ -37,7 +37,7 @@ const killOffice = async (id) => {
     return data
 } 
 
-module.exports = {
+export {
     createOffice,
     getAllOffices,
     getOffice,
