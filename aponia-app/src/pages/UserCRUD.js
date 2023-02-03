@@ -18,7 +18,7 @@ import {
     IconButton,
 } from '@mui/material';
 import Toaster from '../hooks/useToast';
-import { getUser, createUser, deleteUser } from '../services/user/userAPI'
+import { getUser, createUser, deleteUser, updateUser } from '../services/user/userAPI'
 import { getOffice } from '../services/office/officeAPI'
 
 /* Icons */
@@ -97,7 +97,11 @@ export default function UserCRUD() {
                   setUserLastName(res.lastName)
                   setUserMail(res.mail)
                   setUserPhone(res.phone)
-                  setUserType(res.type)
+                  if (res.type===0){
+                    setUserType('Administrador')
+                  } else {
+                    setUserType('Agente')
+                  }
                   showSuccessToast(`Se encontró el usuario con cédula ${searchParams}.`)
                   setSearched(true)
                   setExists(true)
@@ -148,38 +152,87 @@ export default function UserCRUD() {
         setUserType(value)
     }
     const handleSubmit = () => {
-        try{
-          createUser({code: officeCode,})
-            .then((res)=>{
-              showSuccessToast(`Sucursal ${officeCode} registrada exitosamente.`)
-              console.log(`Submit successful: ${res}`)
-              handleCleanUp()
+        if (userMail==='' || userPassword==='' || userIdentification==='' || officeCode==='' || userName==='' || userLastName==='' || userPhone==='' || userType===''){
+            showWarningToast(`Faltan datos por llenar en el formulario.`)
+          } else {
+            try{
+                getOffice(officeCode)
+                .then((r)=>{
+                    const sid = r.code
+                    const ut = userType==='Administrador' ? 0 : 1
+                if (!exists){
+                try{
+                    createUser({SID: sid,
+                                    identification: userIdentification,
+                                    name: userName,
+                                    lastName: userLastName,
+                                    mail: userMail,
+                                    phone: userPhone,
+                                    type: ut,
+                                    password: userPassword})
+                    .then((res)=>{
+                        showSuccessToast(`Usuario ${userIdentification} registrado exitosamente.`)
+                        console.log(`Submit successful: ${res}`)
+                        handleCleanUp()
+                    })
+                    .catch((err)=>{
+                        showWarningToast(`Ya existe un usuario con cédula ${userIdentification}.`)
+                        console.log(`Submit error: ${err}`)
+                    })
+                } catch(error){
+                    console.log(`Submit error: ${error}`)
+                    showErrorToast('Ocurrió un eror al guardar los datos.')
+                }
+                } else {
+                try{
+                    updateUser(user.UID, {SID: sid,
+                        identification: userIdentification,
+                        name: userName,
+                        lastName: userLastName,
+                        mail: userMail,
+                        phone: userPhone,
+                        type: ut,
+                        password: userPassword})
+                    .then((res)=>{
+                        showSuccessToast(`Usuario ${userIdentification} actualizado exitosamente.`)
+                        console.log(`Submit successful: ${res}`)
+                        handleCleanUp()
+                    })
+                    .catch((err)=>{
+                        showWarningToast(`Ocurrió un error al modificar el usuario ${userIdentification}.`)
+                        console.log(`Submit error: ${err}`)
+                    })
+                } catch(error){
+                    console.log(`Submit error: ${error}`)
+                    showErrorToast('Ocurrió un eror al guardar los datos.')
+                }
+                }
+            }) .catch((x)=>{
+                showWarningToast(`No se encontró la sucursal con código ${officeCode}. No se puede guardar el usuario.`)
+                console.log(`Submit error: ${x}`)
             })
-            .catch((err)=>{
-              showWarningToast(`Ya existe una sucursal con el código ${officeCode}.`)
-              console.log(`Submit error: ${err}`)
-            })
-        } catch(error){
-          console.log(`Submit error: ${error}`)
-          showErrorToast('Ocurrió un eror al guardar los datos.')
+          }catch(e){
+            console.log(`Submit error: ${e}`)
+            showErrorToast('Ocurrió un eror al guardar los datos.')
+          }
         }
     }
     const handleDeletion = () => {
-    try{
-        deleteUser(user.UID)
-        .then((res)=>{
-            showSuccessToast(`Sucursal ${userIdentification} eliminada exitosamente.`)
-            console.log(`Delete successful: ${res}`)
-            handleCleanUp()
-        })
-        .catch((err)=>{
-            showWarningToast(`Ocurrió un error al eliminar la sucursal ${userIdentification}.`)
-            console.log(`Delete error: ${err}`)
-        })
-    } catch(error){
-        console.log(`Delete error: ${error}`)
-        showErrorToast('Ocurrió un eror al eliminar la sucursal.')
-    }
+        try{
+            deleteUser(user.UID)
+            .then((res)=>{
+                showSuccessToast(`Usuario ${userIdentification} eliminado exitosamente.`)
+                console.log(`Delete successful: ${res}`)
+                handleCleanUp()
+            })
+            .catch((err)=>{
+                showWarningToast(`Ocurrió un error al eliminar el usuario ${userIdentification}.`)
+                console.log(`Delete error: ${err}`)
+            })
+        } catch(error){
+            console.log(`Delete error: ${error}`)
+            showErrorToast('Ocurrió un eror al eliminar el usuario.')
+        }
     }
     const handleCleanUp = () => {
       setSearchParams('')
@@ -229,7 +282,7 @@ export default function UserCRUD() {
                   <RefreshIcon color="inherit" sx={{ display: 'block' }} />
                 </IconButton>
               </Tooltip>
-              <Button variant="contained" onClick={handleSearchButton} sx={{ mr: 1 }}>
+              <Button variant="contained" onClick={handleSearchButton} disabled={searched} sx={{ mr: 1 }}>
                 Buscar
               </Button>
             </Grid>
