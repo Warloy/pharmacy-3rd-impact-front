@@ -17,13 +17,13 @@ const getOfficebyCode = async (id) => {
     return data?.Data
 }
 
-const createOffice = async (user) => {
-    const { data } = await http.post(`${BASE_URL}`, user)
+const createOffice = async (office) => {
+    const { data } = await http.post(`${BASE_URL}`, office)
     return data
 }
 
-const updateOffice = async (id, user) => {
-    const { data } = await http.put(`${BASE_URL}/${id}`, user)
+const updateOffice = async (id, office) => {
+    const { data } = await http.put(`${BASE_URL}/${id}`, office)
     return data
 }
 

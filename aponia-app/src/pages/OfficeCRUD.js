@@ -16,7 +16,7 @@ import { AppBar,
 } from '@mui/material';
 /* Icons */
 import Toaster from '../hooks/useToast';
-import { getOffice } from '../services/office/officeAPI'
+import { getOffice, createOffice, deleteOffice } from '../services/office/officeAPI'
 
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -59,7 +59,7 @@ export default function OfficeCRUD() {
           .then((res)=>{
             setOffice(res || [])
             setOfficeCode(res.code)
-            showSuccessToast(`Se encontró la oficina con código ${searchParams}.`)
+            showSuccessToast(`Se encontró la sucursal con código ${searchParams}.`)
             setSearched(true)
             setExists(true)
             console.log(res)
@@ -68,11 +68,11 @@ export default function OfficeCRUD() {
             console.log(`Error en la búsqueda: ${err}`)
             setOfficeCode(searchParams)
             setSearched(true)
-            showInfoToast(`No se encontró la oficina con código ${searchParams}. Creando un nuevo registro...`)
+            showInfoToast(`No se encontró la sucursal con código ${searchParams}. Creando un nuevo registro.`)
           })
       } catch(error){
         console.log(`Search error: ${error}`)
-			  showErrorToast('Ocurrió un eror en la búsqueda')
+			  showErrorToast('Ocurrió un eror en la búsqueda.')
       }
     }
   }
@@ -81,7 +81,38 @@ export default function OfficeCRUD() {
     setOfficeCode(value)
   }
   const handleSubmit = () => {
-
+    try{
+      createOffice({code: officeCode,})
+        .then((res)=>{
+          showSuccessToast(`Sucursal ${officeCode} registrada exitosamente.`)
+          console.log(`Submit successful: ${res}`)
+          handleCleanUp()
+        })
+        .catch((err)=>{
+          showWarningToast(`Ya existe una sucursal con el código ${officeCode}.`)
+          console.log(`Submit error: ${err}`)
+        })
+    } catch(error){
+      console.log(`Submit error: ${error}`)
+      showErrorToast('Ocurrió un eror al guardar los datos.')
+    }
+  }
+  const handleDeletion = () => {
+    try{
+      deleteOffice(office.SID)
+        .then((res)=>{
+          showSuccessToast(`Sucursal ${officeCode} eliminada exitosamente.`)
+          console.log(`Delete successful: ${res}`)
+          handleCleanUp()
+        })
+        .catch((err)=>{
+          showWarningToast(`Ocurrió un error al eliminar la sucursal ${officeCode}.`)
+          console.log(`Delete error: ${err}`)
+        })
+    } catch(error){
+      console.log(`Delete error: ${error}`)
+      showErrorToast('Ocurrió un eror al eliminar la sucursal.')
+    }
   }
   const handleCleanUp = () => {
     setSearchParams('')
@@ -110,7 +141,7 @@ export default function OfficeCRUD() {
                 value={searchParams}
                 onChange={handleSearchParams}
                 autoFocus
-                inputProps={{maxlength:15}}
+                inputProps={{maxlength:50}}
                 InputProps={{
                   disableUnderline: true,
                   sx: { fontSize: 'default' },
@@ -142,7 +173,7 @@ export default function OfficeCRUD() {
                         id="office-code"
                         value={officeCode}
                         onChange={handleOfficeCode}
-                        inputProps={{maxlength:15}}
+                        inputProps={{maxlength:50}}
                         disabled
                         endAdornment={
                         <InputAdornment position="end">
@@ -159,10 +190,10 @@ export default function OfficeCRUD() {
                 <Button variant="contained" onClick={handleCleanUp} startIcon={<CancelIcon />}>  Cancelar </Button>
             </Grid>
             <Grid item xs={4} md={2} sx={{ my: 5, mx: 2, width:1 }}>
-                <Button variant="contained" startIcon={<DeleteIcon />} disabled={!exists}>  Eliminar </Button>
+                <Button variant="contained" onClick={handleDeletion} startIcon={<DeleteIcon />} disabled={!exists}>  Eliminar </Button>
             </Grid>
             <Grid item xs={4} md={2} sx={{ my: 5, mx: 2, width:1 }}>
-                <Button variant="contained" startIcon={<SaveIcon />} disabled={!searched}>  Guardar </Button>
+                <Button variant="contained" onClick={handleSubmit} startIcon={<SaveIcon />} disabled={!searched}>  Guardar </Button>
             </Grid>
         </Grid>
     </Paper>
