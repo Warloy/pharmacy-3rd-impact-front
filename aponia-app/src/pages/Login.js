@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 //import {ReactComponent as MitraLockup} from './icons/mitra-lockup.svg';
+import Toaster from '../hooks/useToast';
 
 import { login } from '../services/auth/authService'
 import { setSession } from '../services/jwt';
@@ -16,12 +17,13 @@ import useLoading from '../hooks/useLoading';
 const theme = createTheme();
 
 export default function Login() {
-
+	const { showInfoToast, showErrorToast} = Toaster()
 	const { dispatch } = useAuthContext()
 	const { startLoading, stopLoading, isLoading } = useLoading()
 
 	const handleSubmit = async (event) => {
 		startLoading()
+		showInfoToast('Iniciando sesión...')
 		try {
 			event.preventDefault();
 			const data = new FormData(event.currentTarget);
@@ -47,7 +49,6 @@ export default function Login() {
 				localStorage.setItem('@id', Data?.id)
 				localStorage.setItem('@token', Data?.token)
 				localStorage.setItem('@user', JSON.stringify(userData))
-
 				dispatch({
 					type: 'LOGIN',
 					payload: {
@@ -58,19 +59,14 @@ export default function Login() {
 						}
 					}
 				})
-
 				console.log(`${Data?.name} logged in`)
-
-
-
 			}
 
 		} catch (error) {
 			console.log(`Login error: ${error}`)
+			showErrorToast('Credenciales incorrectas')
 		}
-
 		stopLoading()
-
 	};
 
 	return (
