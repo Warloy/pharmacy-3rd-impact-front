@@ -17,6 +17,10 @@ import {
     MenuItem,
     IconButton,
 } from '@mui/material';
+import Toaster from '../hooks/useToast';
+import { getUser, createUser, deleteUser } from '../services/user/userAPI'
+import { getOffice } from '../services/office/officeAPI'
+
 /* Icons */
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -29,6 +33,7 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import KeyIcon from '@mui/icons-material/Key';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import ClassIcon from '@mui/icons-material/Class';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const categories = [
     {
@@ -50,7 +55,11 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function UserCRUD() {
+    const {showInfoToast, showWarningToast, showSuccessToast, showErrorToast} = Toaster();
+    const [exists, setExists] = React.useState(false);
+    const [searched, setSearched] = React.useState(false);
     const [searchParams, setSearchParams] = React.useState('');
+    const [user, setUser] = React.useState([]);
     const [userMail, setUserMail] = React.useState('');
     const [userPassword, setUserPassword] = React.useState('');
     const [userIdentification, setUserIdentification] = React.useState('');
@@ -60,8 +69,6 @@ export default function UserCRUD() {
     const [userPhone, setUserPhone] = React.useState('');
     const [userType, setUserType] = React.useState(''); 
 
-    const loadForm = (event) => {  
-    }
     const handleReload = () => {
         setSearchParams('')
     }
@@ -71,8 +78,42 @@ export default function UserCRUD() {
         setSearchParams(value)
     }
     const handleSearchButton = () => {
-      searchParams === null ? setUserIdentification('') : 
-      setUserIdentification(searchParams)
+        if (searchParams === '') {
+            showWarningToast(`Debe ingresar la cédula a buscar`)
+          } else {
+            try{
+              getUser(searchParams)
+                .then((res)=>{
+                  setUser(res || [])
+                  setUserIdentification(res.identification)
+                  getOffice(res.SID)
+                  .then((r)=>{
+                    setOfficeCode(r.code)
+                  })
+                  .catch((e)=>{
+                    console.log(`Error al buscar la sucursal: ${e}`)
+                  })
+                  setUserName(res.name)
+                  setUserLastName(res.lastName)
+                  setUserMail(res.mail)
+                  setUserPhone(res.phone)
+                  setUserType(res.type)
+                  showSuccessToast(`Se encontró el usuario con cédula ${searchParams}.`)
+                  setSearched(true)
+                  setExists(true)
+                  console.log(res)
+                })
+                .catch((err)=>{
+                  console.log(`Error en la búsqueda: ${err}`)
+                  setUserIdentification(searchParams)
+                  setSearched(true)
+                  showInfoToast(`No se encontró el usuario con cédula ${searchParams}. Creando un nuevo registro.`)
+                })
+            } catch(error){
+              console.log(`Search error: ${error}`)
+                    showErrorToast('Ocurrió un eror en la búsqueda.')
+            }
+          }
     }
     const handleUserMail = (event) => { 
         let value = event.target.value
@@ -106,7 +147,40 @@ export default function UserCRUD() {
         let value = event.target.value
         setUserType(value)
     }
-
+    const handleSubmit = () => {
+        try{
+          createUser({code: officeCode,})
+            .then((res)=>{
+              showSuccessToast(`Sucursal ${officeCode} registrada exitosamente.`)
+              console.log(`Submit successful: ${res}`)
+              handleCleanUp()
+            })
+            .catch((err)=>{
+              showWarningToast(`Ya existe una sucursal con el código ${officeCode}.`)
+              console.log(`Submit error: ${err}`)
+            })
+        } catch(error){
+          console.log(`Submit error: ${error}`)
+          showErrorToast('Ocurrió un eror al guardar los datos.')
+        }
+    }
+    const handleDeletion = () => {
+    try{
+        deleteUser(user.UID)
+        .then((res)=>{
+            showSuccessToast(`Sucursal ${userIdentification} eliminada exitosamente.`)
+            console.log(`Delete successful: ${res}`)
+            handleCleanUp()
+        })
+        .catch((err)=>{
+            showWarningToast(`Ocurrió un error al eliminar la sucursal ${userIdentification}.`)
+            console.log(`Delete error: ${err}`)
+        })
+    } catch(error){
+        console.log(`Delete error: ${error}`)
+        showErrorToast('Ocurrió un eror al eliminar la sucursal.')
+    }
+    }
     const handleCleanUp = () => {
       setSearchParams('')
       setUserMail('')
@@ -117,6 +191,9 @@ export default function UserCRUD() {
       setUserLastName('')
       setUserPhone('')
       setUserType('')
+      setUser([])
+      setSearched(false)
+      setExists(false)
     }
     
     return (
@@ -170,6 +247,7 @@ export default function UserCRUD() {
                         id="user-mail"
                         value={userMail}
                         onChange={handleUserMail}
+                        inputProps={{maxlength:100}}
                         endAdornment={
                         <InputAdornment position="end">
                             <AlternateEmailIcon />
@@ -187,6 +265,7 @@ export default function UserCRUD() {
                         type="Password"
                         value={userPassword}
                         onChange={handleUserPassword}
+                        inputProps={{maxlength:16}}
                         endAdornment={
                         <InputAdornment position="end">
                             <KeyIcon />
@@ -204,6 +283,7 @@ export default function UserCRUD() {
                         value={userIdentification}
                         onChange={handleUserIdentification}
                         disabled
+                        inputProps={{maxlength:20}}
                         endAdornment={
                         <InputAdornment position="end">
                             <BadgeIcon />
@@ -220,6 +300,7 @@ export default function UserCRUD() {
                         id="user-office-code"
                         value={officeCode}
                         onChange={handleOfficeCode}
+                        inputProps={{maxlength:10}}
                         endAdornment={
                         <InputAdornment position="end">
                             <QrCode2Icon />
@@ -236,6 +317,7 @@ export default function UserCRUD() {
                         id="user-name"
                         value={userName}
                         onChange={handleUserName}
+                        inputProps={{maxlength:50}}
                         endAdornment={
                         <InputAdornment position="end">
                             <DriveFileRenameOutlineIcon />
@@ -252,6 +334,7 @@ export default function UserCRUD() {
                         id="user-last-name"
                         value={userLastName}
                         onChange={handleUserLastName}
+                        inputProps={{maxlength:50}}
                         endAdornment={
                         <InputAdornment position="end">
                             <DriveFileRenameOutlineIcon />
@@ -268,6 +351,7 @@ export default function UserCRUD() {
                         id="user-phone"
                         value={userPhone}
                         onChange={handleUserPhone}
+                        inputProps={{maxlength:15}}
                         endAdornment={
                         <InputAdornment position="end">
                             <PhoneAndroidIcon />
@@ -307,7 +391,10 @@ export default function UserCRUD() {
                 <Button variant="contained" onClick={handleCleanUp} startIcon={<CancelIcon />}>  Cancelar </Button>
             </Grid>
             <Grid item xs={4} md={2} sx={{ my: 5, mx: 2, width:1 }}>
-                <Button variant="contained" startIcon={<SaveIcon />}>  Guardar </Button>
+                <Button variant="contained" onClick={handleDeletion} startIcon={<DeleteIcon />} disabled={!exists}>  Eliminar </Button>
+            </Grid>
+            <Grid item xs={4} md={2} sx={{ my: 5, mx: 2, width:1 }}>
+                <Button variant="contained" onClick={handleSubmit} startIcon={<SaveIcon />} disabled={!searched}>  Guardar </Button>
             </Grid>
         </Grid>
     </Paper>
