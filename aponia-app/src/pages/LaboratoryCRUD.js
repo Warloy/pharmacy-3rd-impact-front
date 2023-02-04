@@ -27,7 +27,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function CatalogCRUD() {
+export default function LaboratoryCRUD() {
   const {showInfoToast, showWarningToast, showSuccessToast, showErrorToast} = Toaster();
   const [exists, setExists] = React.useState(false);
   const [searched, setSearched] = React.useState(false);
@@ -183,7 +183,7 @@ export default function CatalogCRUD() {
                 value={searchParams}
                 onChange={handleSearchParams}
                 autoFocus
-                inputProps={{maxlength:10}}
+                inputProps={{maxlength:15}}
                 InputProps={{
                   disableUnderline: true,
                   sx: { fontSize: 'default' },
@@ -216,7 +216,7 @@ export default function CatalogCRUD() {
                         value={labRIF}
                         onChange={handleLabRIF}
                         disabled
-                        inputProps={{maxlength:10}}
+                        inputProps={{maxlength:15}}
                         endAdornment={
                         <InputAdornment position="end">
                             <QrCode2Icon />

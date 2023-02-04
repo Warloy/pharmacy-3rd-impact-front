@@ -17,6 +17,7 @@ import { AppBar,
 } from '@mui/material';
 import Toaster from '../hooks/useToast';
 import { getMedicine, createMedicine, deleteMedicine, updateMedicine } from '../services/medicine/medicineAPI'
+import { getLab } from '../services/laboratory/laboratoryAPI'
 
 /* Icons */
 import SearchIcon from '@mui/icons-material/Search';
@@ -27,6 +28,7 @@ import MedicationIcon from '@mui/icons-material/Medication';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 
 const categories = [
     {
@@ -62,6 +64,8 @@ export default function CatalogCRUD() {
   const [searchParams, setSearchParams] = React.useState('');
   const [medicine, setMedicine] = React.useState([]);
   const [medCode, setMedCode] = React.useState('');
+  const [labRIF, setLabRIF] = React.useState('');
+  const [medName, setMedName] = React.useState('');
   const [medDesc, setMedDesc] = React.useState('');
   const [presentation, setPresentation] = React.useState('');
 
@@ -81,7 +85,15 @@ export default function CatalogCRUD() {
         getMedicine(searchParams)
           .then((res)=>{
             setMedicine(res || [])
+            getLab(res.LID)
+                  .then((r)=>{
+                    setLabRIF(r.RIF)
+                  })
+                  .catch((e)=>{
+                    console.log(`Error al buscar el laboratorio: ${e}`)
+                  })
             setMedCode(res.code)
+            setMedName(res.name)
             setMedDesc(res.desc)
             setPresentation(res.presentation)
             showSuccessToast(`Se encontró medicina con código ${searchParams}.`)
@@ -109,51 +121,70 @@ export default function CatalogCRUD() {
     let value = event.target.value
       setMedDesc(value)
   }
+  const handleMedName = (event) => { 
+    let value = event.target.value
+      setMedName(value)
+  }
   const handlePresentationList = (event) => {
     let value = event.target.value
       setPresentation(value);
   }
+  const handleLabRIF = (event) => { 
+      let value = event.target.value
+      setLabRIF(value)
+  }
   const handleSubmit = () => {
-    if (medDesc==='' || presentation===''){
+    if (medDesc==='' || presentation==='' || medName==='' || labRIF===''){
       showWarningToast(`Faltan datos por llenar en el formulario.`)
     } else {
-      if (!exists){
-        try{
-          createMedicine({code: medCode,
-                          desc: medDesc,
-                          presentation: presentation})
-            .then((res)=>{
-              showSuccessToast(`Medicina ${medCode} registrada exitosamente.`)
-              console.log(`Submit successful: ${res}`)
-              handleCleanUp()
-            })
-            .catch((err)=>{
-              showWarningToast(`Ya existe una medicina con el código ${medCode}.`)
-              console.log(`Submit error: ${err}`)
-            })
-        } catch(error){
-          console.log(`Submit error: ${error}`)
-          showErrorToast('Ocurrió un eror al guardar los datos.')
+      getLab(labRIF)
+      .then((r)=>{
+          const lid = r.RIF
+        if (!exists){
+          try{
+            createMedicine({code: medCode,
+                            LID: lid,
+                            name: medName,
+                            desc: medDesc,
+                            presentation: presentation})
+              .then((res)=>{
+                showSuccessToast(`Medicina ${medCode} registrada exitosamente.`)
+                console.log(`Submit successful: ${res}`)
+                handleCleanUp()
+              })
+              .catch((err)=>{
+                showWarningToast(`Ya existe una medicina con el código ${medCode}.`)
+                console.log(`Submit error: ${err}`)
+              })
+          } catch(error){
+            console.log(`Submit error: ${error}`)
+            showErrorToast('Ocurrió un eror al guardar los datos.')
+          }
+        } else {
+          try{
+            updateMedicine(medicine.MID, {code: medCode,
+                            LID: lid,
+                            name: medName,
+                            desc: medDesc,
+                            presentation: presentation})
+              .then((res)=>{
+                showSuccessToast(`Medicina ${medCode} actualizada exitosamente.`)
+                console.log(`Submit successful: ${res}`)
+                handleCleanUp()
+              })
+              .catch((err)=>{
+                showWarningToast(`Ocurrió un error al modificar la medicina ${medCode}.`)
+                console.log(`Submit error: ${err}`)
+              })
+          } catch(error){
+            console.log(`Submit error: ${error}`)
+            showErrorToast('Ocurrió un eror al guardar los datos.')
+          }
         }
-      } else {
-        try{
-          updateMedicine(medicine.MID, {code: medCode,
-                          desc: medDesc,
-                          presentation: presentation})
-            .then((res)=>{
-              showSuccessToast(`Medicina ${medCode} actualizada exitosamente.`)
-              console.log(`Submit successful: ${res}`)
-              handleCleanUp()
-            })
-            .catch((err)=>{
-              showWarningToast(`Ocurrió un error al modificar la medicina ${medCode}.`)
-              console.log(`Submit error: ${err}`)
-            })
-        } catch(error){
-          console.log(`Submit error: ${error}`)
-          showErrorToast('Ocurrió un eror al guardar los datos.')
-        }
-      }
+      }).catch((x)=>{
+        showWarningToast(`No se encontró el laboratorio con RIF ${labRIF}. No se puede guardar la medicina.`)
+        console.log(`Submit error: ${x}`)
+    })
     }
   }
   const handleDeletion = () => {
@@ -242,6 +273,40 @@ export default function CatalogCRUD() {
                         </InputAdornment>
                         }
                         label="Código"
+                    />
+                </FormControl>
+            </Grid>
+            <Grid item xs={10} md={8}>
+                <FormControl sx={{ m: 1, width:1, margin:'none' }}  variant="outlined">
+                    <InputLabel>RIF del Laboratorio</InputLabel>
+                    <OutlinedInput
+                        id="catalog-lab-rif"
+                        value={labRIF}
+                        onChange={handleLabRIF}
+                        inputProps={{maxlength:15}}
+                        endAdornment={
+                        <InputAdornment position="end">
+                            <QrCode2Icon />
+                        </InputAdornment>
+                        }
+                        label="RIF del Laboratorio"
+                    />
+                </FormControl>
+            </Grid>
+            <Grid item xs={10} md={8}>
+                <FormControl sx={{ m: 1, width:1, margin:'none' }}  variant="outlined">
+                    <InputLabel>Nombre</InputLabel>
+                    <OutlinedInput
+                        id="catalog-name"
+                        value={medName}
+                        onChange={handleMedName}
+                        inputProps={{maxlength:50}}
+                        endAdornment={
+                        <InputAdornment position="end">
+                            <DriveFileRenameOutlineIcon />
+                        </InputAdornment>
+                        }
+                        label="Nombre"
                     />
                 </FormControl>
             </Grid>

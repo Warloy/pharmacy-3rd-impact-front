@@ -19,6 +19,7 @@ import InventoryCRUD from './pages/InventoryCRUD';
 import LaboratoryCRUD from './pages/LaboratoryCRUD';
 import Login from './pages/Login';
 import Landing from './pages/Landing';
+import Reports from './pages/Reports';
 
 /* AuthProvider */
 import { AuthProvider } from './context/AuthContext';
@@ -65,8 +66,8 @@ function App() {
                   <Route exact path='/' element={<Landing />} />
                   {!token ?
                     <>
-                      {/* Login */}
-                      <Route exact path='/login' element={<Login />} />
+                        {/* Login */}
+                        <Route exact path='/login' element={<Login />} />
                     </>
                     : type === '0' ?
                       <>
@@ -75,12 +76,15 @@ function App() {
                         <Route path='/admin/catalog' element={<CatalogCRUD />} />
                         <Route path='/admin/user' element={<UserCRUD />} />
                         <Route path='/admin/office' element={<OfficeCRUD />} />
+                        {/* Admin/Reports*/}
+                        <Route path='/admin/reports' element={<Reports />} />
+                        <Route path='/admin/reports/global' element={<Reports />} />
                       </>
                       :
                       <>
-                        {/* Admin/Reports*/}
                         {/* Agent*/}
                         <Route path='/agent/inventory' element={<InventoryCRUD />} />
+                        <Route path='/agent/reports' element={<Reports />} />
                       </>
                   }
 
