@@ -11,8 +11,9 @@ import { AppBar,
     InputLabel,
     NativeSelect,
     InputAdornment,
-    MenuItem
+    Box
 } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 import { useLocation } from 'react-router-dom';
 import Toaster from '../hooks/useToast';
 import { getAllOffices } from '../services/office/officeAPI'
@@ -21,6 +22,38 @@ import { getAllOffices } from '../services/office/officeAPI'
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
+
+const columns = [
+    { field: 'SCode',
+     headerName: 'Sucursal', 
+     width: 227,
+    },
+    {
+      field: 'MCode',
+      headerName: 'Código',
+      width: 227,
+    },
+    {
+      field: 'LName',
+      headerName: 'Laboratorio',
+      width: 227,
+    },
+    {
+      field: 'MName',
+      headerName: 'Nombre',
+      width: 227,
+    },
+    {
+      field: 'MPres',
+      headerName: 'Presentación',
+      width: 227,
+    },
+    {
+      field: 'MQty',
+      headerName: 'Cantidad en inventario',
+      width: 227,
+    },
+  ];
 
 export default function Reports() {
   const {showInfoToast, showWarningToast, showSuccessToast, showErrorToast} = Toaster();
@@ -82,7 +115,7 @@ export default function Reports() {
     setExists(false)
   }
     return (
-    <Paper elevation='0' sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
+    <Paper elevation='0' sx={{ maxWidth: 1366, margin: 'auto', overflow: 'hidden' }}>
       <Typography sx={{ mt: 5, mb:0, mx: 2 }} color="text.secondary" align="center">
         Reportes
       </Typography>
@@ -90,7 +123,7 @@ export default function Reports() {
         position="static"
         color='transparent'
         elevation={0}
-        sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}
+        sx={{ maxWidth: 1366, borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}
       >
         { location.pathname==='/admin/reports/global' ?
         <>
@@ -178,9 +211,16 @@ export default function Reports() {
             </Toolbar>
         </>}
       </AppBar>
-      <Typography sx={{ my: 5, mx: 2 }} color="text.secondary" align="center">
-        Reportes
-      </Typography>
+      <Box sx={{ height: 400, width: '100%' }}>
+      <DataGrid
+        rows={collection}
+        columns={columns}
+        pageSize={5}
+        rowsPerPageOptions={[5]}
+        disableSelectionOnClick
+        experimentalFeatures={{ newEditingApi: true }}
+      />
+    </Box>
     </Paper>
   );
 }
