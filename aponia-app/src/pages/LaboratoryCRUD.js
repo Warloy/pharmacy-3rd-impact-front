@@ -11,59 +11,32 @@ import { AppBar,
     InputLabel,
     OutlinedInput,
     InputAdornment,
-    Select,
-    MenuItem,
     IconButton,
 } from '@mui/material';
 import Toaster from '../hooks/useToast';
-import { getMedicine, createMedicine, deleteMedicine, updateMedicine } from '../services/medicine/medicineAPI'
+import { getLab, createLab, deleteLab, updateLab } from '../services/laboratory/laboratoryAPI'
 
 /* Icons */
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
-import DescriptionIcon from '@mui/icons-material/Description';
-import MedicationIcon from '@mui/icons-material/Medication';
+import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-const categories = [
-    {
-        value:"Jarabe"
-    },
-    {
-        value:"Comprimidos"
-    },
-    {
-        value:"Grageas"
-    },
-    {
-        value:"Cápsulas"
-    },
-    {
-        value:"Polvos"
-    },
-    {
-        value:"Píldoras"
-    },
-    {
-        value:"Ampollas/viales"
-    },
-    {
-        value:"Insulina"
-    },
-]
 
 export default function CatalogCRUD() {
   const {showInfoToast, showWarningToast, showSuccessToast, showErrorToast} = Toaster();
   const [exists, setExists] = React.useState(false);
   const [searched, setSearched] = React.useState(false);
   const [searchParams, setSearchParams] = React.useState('');
-  const [medicine, setMedicine] = React.useState([]);
-  const [medCode, setMedCode] = React.useState('');
-  const [medDesc, setMedDesc] = React.useState('');
-  const [presentation, setPresentation] = React.useState('');
+  const [laboratory, setLaboratory] = React.useState([]);
+  const [labRIF, setLabRIF] = React.useState('');
+  const [labName, setLabName] = React.useState('');
+  const [labAddress, setLabAddress] = React.useState('');
+  const [labPhone, setLabPhone] = React.useState('');
 
   const handleReload = () => {
     setSearchParams('')
@@ -75,25 +48,26 @@ export default function CatalogCRUD() {
   }
   const handleSearchButton = () => {
     if (searchParams === '') {
-      showWarningToast(`Debe ingresar el código a buscar`)
+      showWarningToast(`Debe ingresar el RIF a buscar`)
     } else {
       try{
-        getMedicine(searchParams)
+        getLab(searchParams)
           .then((res)=>{
-            setMedicine(res || [])
-            setMedCode(res.code)
-            setMedDesc(res.desc)
-            setPresentation(res.presentation)
-            showSuccessToast(`Se encontró medicina con código ${searchParams}.`)
+            setLaboratory(res || [])
+            setLabRIF(res.RIF)
+            setLabName(res.name)
+            setLabAddress(res.address)
+            setLabPhone(res.phone)
+            showSuccessToast(`Se encontró un laboratorio con RIF ${searchParams}.`)
             setSearched(true)
             setExists(true)
             console.log(res)
           })
           .catch((err)=>{
             console.log(`Error en la búsqueda: ${err}`)
-            setMedCode(searchParams)
+            setLabRIF(searchParams)
             setSearched(true)
-            showInfoToast(`No se encontró medicina con código ${searchParams}. Creando un nuevo registro.`)
+            showInfoToast(`No se encontró un laboratorio con RIF ${searchParams}. Creando un nuevo registro.`)
           })
       } catch(error){
         console.log(`Search error: ${error}`)
@@ -101,34 +75,39 @@ export default function CatalogCRUD() {
       }
     }
   }
-  const handleMedCode = (event) => { 
+  const handleLabRIF = (event) => { 
     let value = event.target.value
-    setMedCode(value)
+    setLabRIF(value)
   }
-  const handleMedDesc = (event) => { 
+  const handleLabName = (event) => { 
     let value = event.target.value
-      setMedDesc(value)
+    setLabName(value)
   }
-  const handlePresentationList = (event) => {
+  const handleLabAddress = (event) => {
     let value = event.target.value
-      setPresentation(value);
+    setLabAddress(value);
+  }
+  const handleLabPhone = (event) => {
+    let value = event.target.value
+    setLabPhone(value);
   }
   const handleSubmit = () => {
-    if (medDesc==='' || presentation===''){
+    if (labName==='' || labAddress==='' || labPhone===''){
       showWarningToast(`Faltan datos por llenar en el formulario.`)
     } else {
       if (!exists){
         try{
-          createMedicine({code: medCode,
-                          desc: medDesc,
-                          presentation: presentation})
+          createLab({RIF: labRIF,
+                          name: labName,
+                          address: labAddress,
+                          phone: labPhone})
             .then((res)=>{
-              showSuccessToast(`Medicina ${medCode} registrada exitosamente.`)
+              showSuccessToast(`Laboratorio ${labRIF} registrado exitosamente.`)
               console.log(`Submit successful: ${res}`)
               handleCleanUp()
             })
             .catch((err)=>{
-              showWarningToast(`Ya existe una medicina con el código ${medCode}.`)
+              showWarningToast(`Ya existe un laboratorio con el RIF ${labRIF}.`)
               console.log(`Submit error: ${err}`)
             })
         } catch(error){
@@ -137,16 +116,17 @@ export default function CatalogCRUD() {
         }
       } else {
         try{
-          updateMedicine(medicine.MID, {code: medCode,
-                          desc: medDesc,
-                          presentation: presentation})
+          updateLab(laboratory.LID, {RIF: labRIF,
+                                            name: labName,
+                                            address: labAddress,
+                                            phone: labPhone})
             .then((res)=>{
-              showSuccessToast(`Medicina ${medCode} actualizada exitosamente.`)
+              showSuccessToast(`Laboratorio ${labRIF} actualizado exitosamente.`)
               console.log(`Submit successful: ${res}`)
               handleCleanUp()
             })
             .catch((err)=>{
-              showWarningToast(`Ocurrió un error al modificar la medicina ${medCode}.`)
+              showWarningToast(`Ocurrió un error al modificar el laboratorio ${labRIF}.`)
               console.log(`Submit error: ${err}`)
             })
         } catch(error){
@@ -158,27 +138,28 @@ export default function CatalogCRUD() {
   }
   const handleDeletion = () => {
     try{
-      deleteMedicine(medicine.MID)
+      deleteLab(laboratory.LID)
         .then((res)=>{
-          showSuccessToast(`Medicina ${medCode} eliminada exitosamente.`)
+          showSuccessToast(`Laboratorio ${labRIF} eliminado exitosamente.`)
           console.log(`Delete successful: ${res}`)
           handleCleanUp()
         })
         .catch((err)=>{
-          showWarningToast(`Ocurrió un error al eliminar la medicina ${medCode}.`)
+          showWarningToast(`Ocurrió un error al eliminar el laboratorio ${labRIF}.`)
           console.log(`Delete error: ${err}`)
         })
     } catch(error){
       console.log(`Delete error: ${error}`)
-      showErrorToast('Ocurrió un eror al eliminar la medicina.')
+      showErrorToast('Ocurrió un eror al eliminar el laboratorio.')
     }
   }
   const handleCleanUp = () => {
     setSearchParams('')
-    setMedCode('')
-    setMedDesc('')
-    setPresentation('')
-    setMedicine([])
+    setLabRIF('')
+    setLabName('')
+    setLabAddress('')
+    setLabPhone('')
+    setLaboratory([])
     setSearched(false)
     setExists(false)
   }
@@ -198,11 +179,11 @@ export default function CatalogCRUD() {
             <Grid item xs>
               <TextField
                 fullWidth
-                placeholder="Buscar por código"
+                placeholder="Buscar por RIF"
                 value={searchParams}
                 onChange={handleSearchParams}
                 autoFocus
-                inputProps={{maxlength:15}}
+                inputProps={{maxlength:10}}
                 InputProps={{
                   disableUnderline: true,
                   sx: { fontSize: 'default' },
@@ -224,18 +205,18 @@ export default function CatalogCRUD() {
         </Toolbar>
       </AppBar>
       <Typography sx={{ my: 5, mx: 2 }} color="text.secondary" align="center">
-        Catálogo de Medicinas
+                Gestión de laboratorios de medicina
       </Typography>
         <Grid container direction="row" rowSpacing={2} columnSpacing={2} alignItems="center" justifyContent="space-evenly" columns="18">
             <Grid item xs={10} md={8}>
                 <FormControl sx={{ m: 1, width:1, margin:'none' }}  variant="outlined">
-                    <InputLabel>Código</InputLabel>
+                    <InputLabel>RIF</InputLabel>
                     <OutlinedInput
-                        id="catalog-code"
-                        value={medCode}
-                        onChange={handleMedCode}
+                        id="lab-rif"
+                        value={labRIF}
+                        onChange={handleLabRIF}
                         disabled
-                        inputProps={{maxlength:15}}
+                        inputProps={{maxlength:10}}
                         endAdornment={
                         <InputAdornment position="end">
                             <QrCode2Icon />
@@ -246,46 +227,56 @@ export default function CatalogCRUD() {
                 </FormControl>
             </Grid>
             <Grid item xs={10} md={8}>
-               <FormControl sx={{ m: 1, width:1, margin:'none' }}  variant="outlined">
-                    <InputLabel>Descripción</InputLabel>
+                <FormControl sx={{ m: 1, width:1, margin:'none' }}  variant="outlined">
+                    <InputLabel>Nombre</InputLabel>
                     <OutlinedInput
-                        id="catalog-desc"
-                        value={medDesc}
-                        onChange={handleMedDesc}
-                        inputProps={{maxlength:100}}
-                        multiline
-                        maxRows='1'
+                        id="lab-name"
+                        value={labName}
+                        onChange={handleLabName}
+                        inputProps={{maxlength:50}}
                         endAdornment={
                         <InputAdornment position="end">
-                            <DescriptionIcon />
+                            <DriveFileRenameOutlineIcon />
                         </InputAdornment>
                         }
-                        label="Descripción"
+                        label="Nombre"
                     />
                 </FormControl>
             </Grid>
             <Grid item xs={10} md={8}>
                <FormControl sx={{ m: 1, width:1, margin:'none' }}  variant="outlined">
-                    <InputLabel>Presentación</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="catalog-presentation"
-                        value={presentation}
-                        label="Presentación"
-                        onChange={handlePresentationList}
+                    <InputLabel>Dirección</InputLabel>
+                    <OutlinedInput
+                        id="lab-address"
+                        value={labAddress}
+                        onChange={handleLabAddress}
+                        inputProps={{maxlength:100}}
+                        multiline
+                        maxRows='1'
                         endAdornment={
-                            <InputAdornment position="start">
-                                <MedicationIcon />
-                            </InputAdornment>
+                        <InputAdornment position="end">
+                            <DirectionsBikeIcon />
+                        </InputAdornment>
                         }
-                    >
-                        <MenuItem disabled value="">
-                            <em>Seleccione la presentación</em>
-                        </MenuItem>
-                        {categories.map(({value}) => (
-                            <MenuItem key={value} value={value}>{value}</MenuItem>
-                        ))}
-                    </Select>
+                        label="Dirección"
+                    />
+                </FormControl>
+            </Grid>
+            <Grid item xs={10} md={8}>
+                <FormControl sx={{ m: 1, width:1, margin:'none' }}  variant="outlined">
+                    <InputLabel>Teléfono</InputLabel>
+                    <OutlinedInput
+                        id="lab-phone"
+                        value={labPhone}
+                        onChange={handleLabPhone}
+                        inputProps={{maxlength:15}}
+                        endAdornment={
+                        <InputAdornment position="end">
+                            <PhoneAndroidIcon />
+                        </InputAdornment>
+                        }
+                        label="Teléfono"
+                    />
                 </FormControl>
             </Grid>
         </Grid>

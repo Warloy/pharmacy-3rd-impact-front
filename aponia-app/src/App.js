@@ -16,12 +16,13 @@ import UserCRUD from './pages/UserCRUD';
 import CatalogCRUD from './pages/CatalogCRUD';
 import OfficeCRUD from './pages/OfficeCRUD';
 import InventoryCRUD from './pages/InventoryCRUD';
+import LaboratoryCRUD from './pages/LaboratoryCRUD';
 import Login from './pages/Login';
 import Landing from './pages/Landing';
 
 /* AuthProvider */
 import { AuthProvider } from './context/AuthContext';
-import useAuthContext from './hooks/useAuthContext';
+//import useAuthContext from './hooks/useAuthContext';
 
 function App() {
   /*
@@ -70,6 +71,7 @@ function App() {
                     : type === '0' ?
                       <>
                         {/* Admin/Cruds*/}
+                        <Route path='/admin/laboratory' element={<LaboratoryCRUD />} />
                         <Route path='/admin/catalog' element={<CatalogCRUD />} />
                         <Route path='/admin/user' element={<UserCRUD />} />
                         <Route path='/admin/office' element={<OfficeCRUD />} />

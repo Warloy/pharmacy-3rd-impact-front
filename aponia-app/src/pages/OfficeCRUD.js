@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { AppBar, 
-    styled,
     Toolbar,
     Typography,
     Paper,
@@ -24,15 +23,6 @@ import QrCode2Icon from '@mui/icons-material/QrCode2';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-}));
 
 export default function OfficeCRUD() {
   const {showInfoToast, showWarningToast, showSuccessToast, showErrorToast} = Toaster();
