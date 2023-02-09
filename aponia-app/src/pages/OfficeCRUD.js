@@ -174,6 +174,24 @@ export default function OfficeCRUD() {
                     />
                 </FormControl>
             </Grid>
+            <Grid item xs={10} md={8}>
+                <FormControl sx={{ m: 1, width:1, margin:'none' }}  variant="outlined">
+                    <InputLabel>Código de Sucursal</InputLabel>
+                    <OutlinedInput
+                        id="office-code"
+                        value={officeCode}
+                        onChange={handleOfficeCode}
+                        inputProps={{maxlength:50}}
+                        disabled
+                        endAdornment={
+                        <InputAdornment position="end">
+                            <QrCode2Icon />
+                        </InputAdornment>
+                        }
+                        label="Código de Sucursal"
+                    />
+                </FormControl>
+            </Grid>
         </Grid>
         <Grid container direction="row" rowSpacing={2} columnSpacing={2} alignItems="center" justifyContent="flex-end" columns="18" sx={{width:0.95}}>
             <Grid item xs={4} md={2} sx={{ my: 5, mx: 2, width:1 }}>

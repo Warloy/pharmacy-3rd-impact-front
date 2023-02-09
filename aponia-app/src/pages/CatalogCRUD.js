@@ -139,7 +139,7 @@ export default function CatalogCRUD() {
     } else {
       getLab(labRIF)
       .then((r)=>{
-          const lid = r.RIF
+          const lid = r.LID
         if (!exists){
           try{
             createMedicine({code: medCode,
@@ -208,6 +208,8 @@ export default function CatalogCRUD() {
     setSearchParams('')
     setMedCode('')
     setMedDesc('')
+    setMedName('')
+    setLabRIF('')
     setPresentation('')
     setMedicine([])
     setSearched(false)
