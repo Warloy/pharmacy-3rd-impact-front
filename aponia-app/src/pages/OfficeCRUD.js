@@ -14,7 +14,7 @@ import { AppBar,
     IconButton,
 } from '@mui/material';
 import Toaster from '../hooks/useToast';
-import { getOffice, createOffice, deleteOffice } from '../services/office/officeAPI'
+import { getOffice, createOffice, deleteOffice, updateOffice } from '../services/office/officeAPI'
 
 /* Icons */
 import SearchIcon from '@mui/icons-material/Search';
@@ -23,6 +23,7 @@ import QrCode2Icon from '@mui/icons-material/QrCode2';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 
 export default function OfficeCRUD() {
   const {showInfoToast, showWarningToast, showSuccessToast, showErrorToast} = Toaster();
@@ -31,6 +32,7 @@ export default function OfficeCRUD() {
   const [searchParams, setSearchParams] = React.useState('');
   const [office, setOffice] = React.useState([]);
   const [officeCode, setOfficeCode] = React.useState('');
+  const [officeName, setOfficeName] = React.useState('');
 
   const handleReload = () => {
     setSearchParams('')
@@ -49,6 +51,7 @@ export default function OfficeCRUD() {
           .then((res)=>{
             setOffice(res || [])
             setOfficeCode(res.code)
+            setOfficeName(res.name)
             showSuccessToast(`Se encontró la sucursal con código ${searchParams}.`)
             setSearched(true)
             setExists(true)
@@ -70,21 +73,49 @@ export default function OfficeCRUD() {
     let value = event.target.value
     setOfficeCode(value)
   }
+  const handleOfficeName = (event) => {
+    let value = event.target.value
+    setOfficeName(value)
+  }
   const handleSubmit = () => {
-    try{
-      createOffice({code: officeCode,})
-        .then((res)=>{
-          showSuccessToast(`Sucursal ${officeCode} registrada exitosamente.`)
-          console.log(`Submit successful: ${res}`)
-          handleCleanUp()
-        })
-        .catch((err)=>{
-          showWarningToast(`Ya existe una sucursal con el código ${officeCode}.`)
-          console.log(`Submit error: ${err}`)
-        })
-    } catch(error){
-      console.log(`Submit error: ${error}`)
-      showErrorToast('Ocurrió un eror al guardar los datos.')
+    if (officeName===''){
+      showWarningToast(`Faltan datos por llenar en el formulario.`)
+    } else {
+        if (!exists){
+          try{
+            createOffice({code: officeCode,
+                          name: officeName})
+              .then((res)=>{
+                showSuccessToast(`Sucursal ${officeCode} registrada exitosamente.`)
+                console.log(`Submit successful: ${res}`)
+                handleCleanUp()
+              })
+              .catch((err)=>{
+                showWarningToast(`Ya existe una sucursal con el código ${officeCode}.`)
+                console.log(`Submit error: ${err}`)
+              })
+          } catch(error){
+            console.log(`Submit error: ${error}`)
+            showErrorToast('Ocurrió un eror al guardar los datos.')
+          }
+        } else {
+          try{
+            updateOffice(office.SID, {code: officeCode,
+                          name: officeName})
+              .then((res)=>{
+                showSuccessToast(`Sucursal ${officeCode} actualizada exitosamente.`)
+                console.log(`Submit successful: ${res}`)
+                handleCleanUp()
+              })
+              .catch((err)=>{
+                showWarningToast(`Ocurrió un error al modificar la sucursal ${officeCode}.`)
+                console.log(`Submit error: ${err}`)
+              })
+          } catch(error){
+            console.log(`Submit error: ${error}`)
+            showErrorToast('Ocurrió un eror al guardar los datos.')
+          }
+        }
     }
   }
   const handleDeletion = () => {
@@ -107,6 +138,7 @@ export default function OfficeCRUD() {
   const handleCleanUp = () => {
     setSearchParams('')
     setOfficeCode('')
+    setOfficeName('')
     setOffice([])
     setSearched(false)
     setExists(false)
@@ -163,7 +195,7 @@ export default function OfficeCRUD() {
                         id="office-code"
                         value={officeCode}
                         onChange={handleOfficeCode}
-                        inputProps={{maxlength:50}}
+                        inputProps={{maxlength:40}}
                         disabled
                         endAdornment={
                         <InputAdornment position="end">
@@ -176,19 +208,18 @@ export default function OfficeCRUD() {
             </Grid>
             <Grid item xs={10} md={8}>
                 <FormControl sx={{ m: 1, width:1, margin:'none' }}  variant="outlined">
-                    <InputLabel>Código de Sucursal</InputLabel>
+                    <InputLabel>Nombre</InputLabel>
                     <OutlinedInput
-                        id="office-code"
-                        value={officeCode}
-                        onChange={handleOfficeCode}
+                        id="office-name"
+                        value={officeName}
+                        onChange={handleOfficeName}
                         inputProps={{maxlength:50}}
-                        disabled
                         endAdornment={
                         <InputAdornment position="end">
-                            <QrCode2Icon />
+                            <DriveFileRenameOutlineIcon />
                         </InputAdornment>
                         }
-                        label="Código de Sucursal"
+                        label="Nombre"
                     />
                 </FormControl>
             </Grid>
