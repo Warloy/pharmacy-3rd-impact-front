@@ -24,6 +24,7 @@ import DomainAddIcon from '@mui/icons-material/DomainAdd';
 import PublicIcon from '@mui/icons-material/Public';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
+import BiotechIcon from '@mui/icons-material/Biotech';
 
 import useAuthContext from '../hooks/useAuthContext';
 
@@ -50,6 +51,7 @@ const categories = [
       { id: 'Catálogo de medicina', icon: <MedicationIcon />, link: '/admin/catalog' },
       { id: 'Gestión de usuarios', icon: <ManageAccountsIcon />, link: '/admin/user' },
       { id: 'Gestión de sucursales', icon: <DomainAddIcon />, link: '/admin/office' },
+      { id: 'Gestión de laboratorios', icon: <BiotechIcon />, link: '/admin/laboratory' },
     ],
   },
   {
@@ -75,6 +77,7 @@ const categories = [
 export default function CustomizedList() {
 
   const {
+    // eslint-disable-next-line
     state: { user },
     dispatch
   } = useAuthContext()
@@ -91,10 +94,6 @@ export default function CustomizedList() {
 
   const handleChange = (prop) => () => {
     setOpenCategories({ ...openCategories, [prop]: !openCategories[prop] })
-  }
-
-  const handleLogOut = (event) => () => {
-
   }
 
   return (

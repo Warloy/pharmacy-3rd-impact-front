@@ -1,6 +1,5 @@
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
-import { styled } from '@mui/material/styles';
 import { 
     Toolbar, 
     Typography, 
@@ -45,14 +44,6 @@ const categories = [
         label:"Agente"
     },
 ]
-
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-}));
 
 export default function UserCRUD() {
     const {showInfoToast, showWarningToast, showSuccessToast, showErrorToast} = Toaster();
@@ -207,7 +198,7 @@ export default function UserCRUD() {
                     showErrorToast('Ocurrió un eror al guardar los datos.')
                 }
                 }
-            }) .catch((x)=>{
+            }).catch((x)=>{
                 showWarningToast(`No se encontró la sucursal con código ${officeCode}. No se puede guardar el usuario.`)
                 console.log(`Submit error: ${x}`)
             })
@@ -220,15 +211,15 @@ export default function UserCRUD() {
     const handleDeletion = () => {
         try{
             deleteUser(user.UID)
-            .then((res)=>{
-                showSuccessToast(`Usuario ${userIdentification} eliminado exitosamente.`)
-                console.log(`Delete successful: ${res}`)
-                handleCleanUp()
-            })
-            .catch((err)=>{
-                showWarningToast(`Ocurrió un error al eliminar el usuario ${userIdentification}.`)
-                console.log(`Delete error: ${err}`)
-            })
+                .then((res)=>{
+                    showSuccessToast(`Usuario ${userIdentification} eliminado exitosamente.`)
+                    console.log(`Delete successful: ${res}`)
+                    handleCleanUp()
+                })
+                .catch((err)=>{
+                    showWarningToast(`Ocurrió un error al eliminar el usuario ${userIdentification}.`)
+                    console.log(`Delete error: ${err}`)
+                })
         } catch(error){
             console.log(`Delete error: ${error}`)
             showErrorToast('Ocurrió un eror al eliminar el usuario.')
