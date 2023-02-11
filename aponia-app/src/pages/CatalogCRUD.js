@@ -55,6 +55,12 @@ const categories = [
     {
         value:"Insulina"
     },
+    {
+        value:"Emulsión"
+    },
+    {
+        value:"Gotas"
+    },
 ]
 
 export default function CatalogCRUD() {
