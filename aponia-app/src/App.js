@@ -78,7 +78,6 @@ function App() {
                         <Route path='/admin/office' element={<OfficeCRUD />} />
                         {/* Admin/Reports*/}
                         <Route path='/admin/reports' element={<Reports />} />
-                        <Route path='/admin/reports/global' element={<Reports />} />
                       </>
                       :
                       <>

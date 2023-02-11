@@ -38,10 +38,13 @@ export default function Login() {
 
 			if (Data?.token) {
 
+				console.log(Data)
+
 				const userData = {
 					name: Data?.name,
 					email: email,
-					type: Data?.type?.toString()
+					type: Data?.type?.toString(),
+					SID: Data?.SID?.toString()
 				}
 
 				setSession(Data?.id, Data?.token, userData)
