@@ -57,7 +57,6 @@ export default function Reports() {
       try {
 
         const response = await getAllOffices()
-        console.log(response)
         setOfficeList(response)
         setIsLoadingOffices(false)
 

@@ -17,8 +17,8 @@ const getInventoryQty = async (body = {}) => {
     return data?.Data
 }
 
-const getInventoryMID = async (id) => {
-    const { data } = await http.get(`${BASE_URL}/search-iden/${id}`)
+const getInventory = async (sid, mid) => {
+    const { data } = await http.get(`${BASE_URL}/${sid}/${mid}`)
     return data?.Data
 }
 
@@ -27,13 +27,13 @@ const createInventory = async (inv) => {
     return data
 }
 
-const updateLab = async (id, inv) => {
+const updateInventory = async (id, inv) => {
     const { data } = await http.put(`${BASE_URL}/${id}`, inv)
     return data
 }
 
-const deleteLab = async (id) => {
-    const { data } = await http.delete(`${BASE_URL}/${id}`)
+const deleteInventory = async (sid,mid) => {
+    const { data } = await http.delete(`${BASE_URL}/${sid}/${mid}`)
     return data
 } 
 
@@ -45,9 +45,10 @@ const killLab = async (id) => {
 export {
     createInventory,
     getAllInventories,
+    getInventory,
     getInventoryList,
     getInventoryQty,
-    updateLab,
-    deleteLab,
+    updateInventory,
+    deleteInventory,
     killLab
 }
