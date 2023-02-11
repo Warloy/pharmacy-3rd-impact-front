@@ -59,8 +59,7 @@ const categories = [
     secondary: 'Módulo de reportes y control',
     type: '0',
     children: [
-      { id: 'Por Sucursal', icon: <SettingsIcon />, link: '/admin/reports' },
-      { id: 'Global', icon: <PublicIcon />, link: '/admin/reports/global' },
+      { id: 'Reportes', icon: <SettingsIcon />, link: '/admin/reports' },
     ],
   },
   {

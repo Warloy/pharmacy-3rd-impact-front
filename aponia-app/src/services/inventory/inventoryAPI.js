@@ -1,29 +1,34 @@
 import { http } from '../http'
 
-const BASE_URL = 'laboratory'
+const BASE_URL = 'inventory'
 
-const getAllLabs = async () => {
+const getAllInventories = async () => {
     const { data } = await http.get(`${BASE_URL}`)
     return data?.Data
 }
 
-const getLab = async (id) => {
-    const { data } = await http.get(`${BASE_URL}/${id}`)
+const getInventoryList = async (body = {}) => {
+    const { data } = await http.post(`${BASE_URL}/inventoryList`, body)
     return data?.Data
 }
 
-const getLabRIF = async (id) => {
+const getInventoryQty = async (body = {}) => {
+    const { data } = await http.post(`${BASE_URL}/inventoryPages`, body)
+    return data?.Data
+}
+
+const getInventoryMID = async (id) => {
     const { data } = await http.get(`${BASE_URL}/search-iden/${id}`)
     return data?.Data
 }
 
-const createLab = async (user) => {
-    const { data } = await http.post(`${BASE_URL}`, user)
+const createInventory = async (inv) => {
+    const { data } = await http.post(`${BASE_URL}`, inv)
     return data
 }
 
-const updateLab = async (id, user) => {
-    const { data } = await http.put(`${BASE_URL}/${id}`, user)
+const updateLab = async (id, inv) => {
+    const { data } = await http.put(`${BASE_URL}/${id}`, inv)
     return data
 }
 
@@ -38,10 +43,10 @@ const killLab = async (id) => {
 } 
 
 export {
-    createLab,
-    getAllLabs,
-    getLab,
-    getLabRIF,
+    createInventory,
+    getAllInventories,
+    getInventoryList,
+    getInventoryQty,
     updateLab,
     deleteLab,
     killLab
