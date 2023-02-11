@@ -87,7 +87,7 @@ export default function Reports() {
       }
 
       const registerCount = await getInventoryQty({ oc: body.oc, mc: body.mc, }) //Amount of registers after applying the filter
-      const pageCount = Math.round(Number(registerCount / size)) //Amount of pages after applying the filter
+      const pageCount = Math.ceil(Number(registerCount / size))-1 //Amount of pages after applying the filter
       const currentRowStart = ((currentPage * size) + 1)
       const cre = Math.min(((currentPage + 1) * size), registerCount)
       setCurrentRows(currentRowStart)
