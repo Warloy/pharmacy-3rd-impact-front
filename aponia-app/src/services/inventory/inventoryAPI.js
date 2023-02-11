@@ -22,6 +22,16 @@ const getInventory = async (sid, mid) => {
     return data?.Data
 }
 
+const getInventoryCount = async (sid) => {
+    const { data } = await http.get(`${BASE_URL}/count/${sid}`)
+    return data?.Data
+}
+
+const getInventorySum = async (sid) => {
+    const { data } = await http.get(`${BASE_URL}/sum/${sid}`)
+    return data?.Data
+}
+
 const createInventory = async (inv) => {
     const { data } = await http.post(`${BASE_URL}`, inv)
     return data
@@ -48,6 +58,8 @@ export {
     getInventory,
     getInventoryList,
     getInventoryQty,
+    getInventoryCount,
+    getInventorySum,
     updateInventory,
     deleteInventory,
     killLab

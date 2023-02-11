@@ -18,7 +18,7 @@ import {
 import { useLocation } from 'react-router-dom';
 import Toaster from '../hooks/useToast';
 import { getAllOffices, getOffice } from '../services/office/officeAPI'
-import { getInventoryList, getInventoryQty } from '../services/inventory/inventoryAPI'
+import { getInventoryList, getInventoryQty, getInventoryCount, getInventorySum } from '../services/inventory/inventoryAPI'
 import useLoading from '../hooks/useLoading';
 import BasicTable from '../components/NotADataGrid'
 
@@ -45,6 +45,8 @@ export default function Reports() {
   const [totalRows, setTotalRows] = React.useState(0)
   const [currentRows, setCurrentRows] = React.useState(0)
   const [currentRowEnd, setCurrentRowEnd] = React.useState(0)
+  const [medAmount, setMedAmount] = React.useState(0)
+  const [medSum, setMedSum] = React.useState(0)
 
   const [isLoadingOffices, setIsLoadingOffices] = React.useState(false)
 
@@ -92,6 +94,22 @@ export default function Reports() {
       setCurrentRowEnd(cre)
       setTotalRows(registerCount)
       setTotalPages(pageCount)
+      if (searchParams==='' && type==='0'){
+        const countMedicine = await getInventoryCount('*')
+        const sumMedicine = await getInventorySum('*')
+        setMedAmount(countMedicine)
+        setMedSum(sumMedicine)
+      } else if (type==='0') {
+        const countMedicine = await getInventoryCount(searchParams)
+        const sumMedicine = await getInventorySum(searchParams)
+        setMedAmount(countMedicine)
+        setMedSum(sumMedicine)
+      } else {
+        const countMedicine = await getInventoryCount(ActiveOffice.code)
+        const sumMedicine = await getInventorySum(ActiveOffice.code)
+        setMedAmount(countMedicine)
+        setMedSum(sumMedicine)
+      }
 
       const resp = await getInventoryList(body)
 
@@ -277,6 +295,15 @@ export default function Reports() {
             <Typography variant="caption" sx={{ ml: 3, mb: 2 }}>
               Mostrando resultados {currentRows}-{currentRowEnd} de {totalRows}
             </Typography>
+            {searchParams==='' && type==='0' ? <>
+            <Typography variant="caption" sx={{ ml: 3, mb: 2 }}>
+                Existen {medAmount} tipos de medicina, con un total de {medSum} existencias en la base de datos.
+              </Typography>
+            </>:<>
+              <Typography variant="caption" sx={{ ml: 3, mb: 2 }}>
+                Existen {medAmount} tipos de medicina, con un total de {medSum} existencias en la sucursal {searchParams}.
+              </Typography>
+            </>}
 
             <div
               style={{
