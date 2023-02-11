@@ -149,11 +149,11 @@ export default function UserCRUD() {
             try{
                 getOffice(officeCode)
                 .then((r)=>{
-                    const sid = r.code
-                    const ut = userType==='Administrador' ? 0 : 1
+                    const sid = r.SID
+                    const ut = userType === 'Administrador' ? 0 : 1
                 if (!exists){
                 try{
-                    createUser({SID: sid,
+                    createUser({    SID: sid,
                                     identification: userIdentification,
                                     name: userName,
                                     lastName: userLastName,
