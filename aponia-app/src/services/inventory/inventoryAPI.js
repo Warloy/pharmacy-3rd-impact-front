@@ -17,13 +17,13 @@ const getLabRIF = async (id) => {
     return data?.Data
 }
 
-const createLab = async (lab) => {
-    const { data } = await http.post(`${BASE_URL}`, lab)
+const createLab = async (user) => {
+    const { data } = await http.post(`${BASE_URL}`, user)
     return data
 }
 
-const updateLab = async (id, lab) => {
-    const { data } = await http.put(`${BASE_URL}/${id}`, lab)
+const updateLab = async (id, user) => {
+    const { data } = await http.put(`${BASE_URL}/${id}`, user)
     return data
 }
 
